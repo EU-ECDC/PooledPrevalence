@@ -1,20 +1,30 @@
 #' Simulation of pooled prevalence studies
 #'
-#' Generate a sample of individuals with a given disease status informed by a chosen underlying diseases prevalence and risk variability.
-#' Then simulate a pooled test results from such sample. The process can be repeated for a number of iteration to have a distribution of results.
+#' Generate a sample of individuals with a given disease status informed by a
+#' chosen underlying diseases prevalence and risk variability. Then simulate a
+#' pooled test results from such sample. The process can be repeated for a
+#' number of iteration to have a distribution of results.
 #'
 #' @param w number of pools to test (default \code{200})
 #' @param s number of sampled individuals per pool (default \code{12})
 #' @param p expected population prevalence (default \code{0.01})
-#' @param precision parameter to set the variability of the individual risks in the population. Prevalenca and precision are used to create the \alhpa and \beta parameter of a Beta distribution: \alpha = precision \times prevalence, \beta = precision \times (1 - prevalence)
 #' @param iters number of simulations (default \code{3000})
-#' @param consider.sensitivity consider sensitivity in sample acquisition in the simulation (default \code{FALSE})
-#' @param asens \alpha parameter of the Beta distribution for the sampling sensitivity (default \code{8.88})
-#' @param bsens \beta parameter of the Beta distribution for the sampling sensitivity (default \code{0.74})
-#' @param simulate.results add estimation results to the simulation (default \code{TRUE})
-#' @param estimation.method whether to use Bayesian Conjugate \\(default\\) or MLE for the prevalence estimation (default \code{'B'})
+#' @param consider.sensitivity consider sensitivity in sample acquisition in the
+#'   simulation (default \code{FALSE})
+#' @param asens \alpha parameter of the Beta distribution for the sampling
+#'   sensitivity (default \code{8.88})
+#' @param bsens \beta parameter of the Beta distribution for the sampling
+#'   sensitivity (default \code{0.74})
+#' @param simulate.results add estimation results to the simulation (default
+#'   \code{TRUE})
+#' @param estimation.method whether to use Bayesian Conjugate \\(default\\) or
+#'   MLE for the prevalence estimation (default \code{'B'})
 #'
-#' @return A dataframe with: the initial w, s, and p parameters; p.sample: the individual risk ditribution quantiles (0.025, .5, .975); cases: the number of positive individuals in the sample, after accounting for sampling sensitivity; pos & neg: the number of positive and negative pools out of w tested pools.
+#' @return A dataframe with: the initial w, s, and p parameters; p.sample: the
+#'   individual risk ditribution quantiles (0.025, .5, .975); cases: the number
+#'   of positive individuals in the sample, after accounting for sampling
+#'   sensitivity; pos & neg: the number of positive and negative pools out of w
+#'   tested pools.
 #'
 #' @examples
 #' # Simulate a study in a population with a disease risk of 1%
@@ -22,10 +32,16 @@
 #' set.seed(1234)
 #' simulate.pool.test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = F)
 #'
-#' # Same simulation this time considering false negatives due to sampling sensitity
+#' # Same simulation this time considering false negatives due to sampling sensitivity,
+#' # with \emph{asens} and \emph{bsens} chosen to have a mean sensitivity of 95% and
+#' # a lower bound around 70%
 #'
 #' set.seed(1234)
 #' simulate.pool.test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = T)
+#'
+#' # use the \emph{iters} argument to create more simulations
+#'
+#' simulate.pool.test(s = 8, w = 250, p = .01, iter = 3000, consider.sensitivity = F)
 #'
 #' @export
 
