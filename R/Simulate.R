@@ -17,14 +17,24 @@
 #' @return A dataframe with: the initial w, s, and p parameters; p.sample: the individual risk ditribution quantiles (0.025, .5, .975); cases: the number of positive individuals in the sample, after accounting for sampling sensitivity; pos & neg: the number of positive and negative pools out of w tested pools.
 #'
 #' @examples
-#' # Simulate 3000 studies out of a population with a disease risk of 0.012% \\[0.63%, 4.03%\\]
+#' # Simulate a study in a population with a disease risk of 1%
+#'
+#' set.seed(1234)
+#' simulate.pool.test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = F)
+#'
+#' # Same simulation this time considering false negatives due to sampling sensitity
+#'
+#' set.seed(1234)
+#' simulate.pool.test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = T)
 #'
 #' @export
 
-simulate.pool.test <- function(w = 200, s = 12, p = .01, u = 80, iters = 3000, consider.sensitivity = F, simulate.results = T, asens = 8.88, bsens = 0.74, estimation.method = 'B') {
+simulate.pool.test <- function(w = 200, s = 12, p = .01, iters = 3000, consider.sensitivity = F, simulate.results = T, asens = 8.88, bsens = 0.74, estimation.method = 'B') {
 	if (estimation.method %nin% c('B', 'MLE')) stop('Only Bayesian Conjugate and ML estimation methods are allowed')
 
-	a <- p * u # 1.1 is a shrinkage factor against unprobable values close to 0 or 1
+	u <- 80 # Strangely, it does not seem to impact the simulations. to investigate
+
+	a <- p * u
 	b <- u - a
 	sim.p <- rbeta(w * s * iters, a, b)
 	cases <- rbernoulli(w * s * iters, sim.p)
