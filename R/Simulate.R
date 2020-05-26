@@ -4,22 +4,22 @@
 #' chosen underlying diseases prevalence and risk variability. Then simulate a
 #' pooled test results from such sample. The process can be repeated for a
 #' number of iteration to have a distribution of results. The prevalence in each
-#' simulation is estimated through the \code{\link{get.estimates(method = 'B')}}
+#' simulation is estimated through the \code{\link{get.estimates(method = 'CB')}}
 #' function.
 #'
-#' @param w number of pools to test (default \code{200})
-#' @param s number of sampled individuals per pool (default \code{12})
-#' @param p expected population prevalence (default \code{0.01})
-#' @param iters number of simulations (default \code{3000})
-#' @param consider.sensitivity consider sensitivity in sample acquisition in the
+#' @param w Number of pools to test (default \code{200})
+#' @param s Number of sampled individuals per pool (default \code{12})
+#' @param p Expected population prevalence (default \code{0.01})
+#' @param iters Number of simulations (default \code{3000})
+#' @param consider.sensitivity Consider sensitivity in sample acquisition in the
 #'   simulation (default \code{FALSE})
-#' @param asens \alpha parameter of the Beta distribution for the sampling
+#' @param asens \alpha Parameter of the Beta distribution for the sampling
 #'   sensitivity (default \code{8.88})
-#' @param bsens \beta parameter of the Beta distribution for the sampling
+#' @param bsens \beta Parameter of the Beta distribution for the sampling
 #'   sensitivity (default \code{0.74})
-#' @param simulate.results add estimation results to the simulation (default
+#' @param simulate.results Add estimation results to the simulation (default
 #'   \code{TRUE})
-#' @param estimation.method whether to use Bayesian Conjugate \\(default\\) or
+#' @param estimation.method Whether to use Bayesian Conjugate \\(default\\) or
 #'   MLE for the prevalence estimation (default \code{'B'})
 #'
 #' @return A dataframe with: the initial w, s, and p parameters; p.sample: the
@@ -47,7 +47,7 @@
 #'
 #' @export
 
-simulate.pool.test <- function(w = 200, s = 12, p = .01, iters = 3000, consider.sensitivity = F, simulate.results = T, asens = 8.88, bsens = 0.74, estimation.method = 'B') {
+simulate_pool_test <- function(w = 200, s = 12, p = .01, iters = 3000, consider.sensitivity = F, simulate.results = T, asens = 8.88, bsens = 0.74, estimation.method = 'B') {
 	if (estimation.method %nin% c('B', 'MLE')) stop('Only Bayesian Conjugate and ML estimation methods are allowed')
 
 	u <- 80 # Strangely, it does not seem to impact the simulations. to investigate
@@ -56,7 +56,7 @@ simulate.pool.test <- function(w = 200, s = 12, p = .01, iters = 3000, consider.
 	b <- u - a
 	sim.p <- rbeta(w * s * iters, a, b)
 	cases <- rbernoulli(w * s * iters, sim.p)
-	positives <- if (consider.sensitivity) cases * rbernoulli(w * s * iters, rbeta(w * s * iters, asens, bsens)) else cases
+	positives <- if (consider.sensitivity) cases * rbinom(w * s * iters, 1, rbeta(w * s * iters, asens, bsens)) else cases
 
 	pool.res <- (matrix(positives, nrow = s) %>% colsums()) > 0
 	test.pos.pools <- matrix(pool.res, nrow = w) %>% colsums()
