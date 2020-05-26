@@ -3,7 +3,9 @@
 #' Generate a sample of individuals with a given disease status informed by a
 #' chosen underlying diseases prevalence and risk variability. Then simulate a
 #' pooled test results from such sample. The process can be repeated for a
-#' number of iteration to have a distribution of results.
+#' number of iteration to have a distribution of results. The prevalence in each
+#' simulation is estimated through the \code{\link{get.estimates(method = 'B')}}
+#' function.
 #'
 #' @param w number of pools to test (default \code{200})
 #' @param s number of sampled individuals per pool (default \code{12})
