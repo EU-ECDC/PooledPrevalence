@@ -1,4 +1,4 @@
-Package: ECDCPooledPrevalence
+Package: PooledPrevalence
 Title: Tools for Implementation and Analysis of Prevalence Studies based Pooled Testing
 Type: Package
 Version: 0.1
