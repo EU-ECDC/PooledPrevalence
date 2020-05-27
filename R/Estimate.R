@@ -48,6 +48,8 @@
 #'   sample acquisition sensitivity
 #' @param bsens \eqn{\beta} parameter of the Beta distribution describing the
 #'   sample acquisition sensitivity
+#' @param consider.sensitivity whether to consider sample acquisition
+#'   sensitivity in the HB estimation
 #'
 #' @return A named numeric matrix of height equal to the length of the parameter
 #'   vectors. The matrix contains: \describe{ \item{p_est}{The positivity rate
@@ -64,7 +66,8 @@
 #' get_estimates(s = 10, w = 200, k = 30)
 #'
 #' # Same study now analyzed with a full bayesian estimation considering sampling sensitivity.
-#' # Notice the slightly higher estimated prevalence, due to the incorporation of the false negatives due to sampling
+#' # Notice the slightly higher estimated prevalence, due to the incorporation of the false
+#' # negatives due to sampling
 #'
 #' \dontrun{
 #'    get_estimates(s = 10, w = 200, k = 30, method = 'HC')
@@ -89,7 +92,7 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95, 
 	p_test <- k / w
 
 	if (method[1] == 'ML') {
-		Z <- qnorm((1 - level)/2) %>% abs
+		Z <- stats::qnorm((1 - level)/2) %>% abs
 
 		Up <- 1 - (1 - invlogit(logit(p_test) + Z * sqrt(1/(w * p_test * (1 - p_test)))))^(1/s)
 		Lo <- 1 - (1 - invlogit(logit(p_test) - Z * sqrt(1/(w * p_test * (1 - p_test)))))^(1/s)
@@ -106,9 +109,9 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95, 
 
 		#browser()
 
-		Up <- 1 - (1 - qbeta(qu, a + k, b + w - k))^(1/s)
-		Lo <- 1 - (1 - qbeta(ql, a + k, b + w - k))^(1/s)
-		Est <- 1 - (1 - qbeta(.5, a + k, b + w - k))^(1/s)
+		Up <- 1 - (1 - stats::qbeta(qu, a + k, b + w - k))^(1/s)
+		Lo <- 1 - (1 - stats::qbeta(ql, a + k, b + w - k))^(1/s)
+		Est <- 1 - (1 - stats::qbeta(.5, a + k, b + w - k))^(1/s)
 	}
 	else if (method[1] == 'HB') {
 
@@ -122,10 +125,10 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95, 
 
 		if (!file.exists('Estimation_model.rds')) compile.estimation.model()
 
-		fit <- r(function(x) {
+		fit <- callr::r(function(x) {
 			rstan::sampling(object = readRDS('Estimation_model.rds'), data = x, iter = 1500, chains = 8)
 		}, args = list(data_stan)) %>%
-			tidy(conf.int = T, conf.level = level) %>% filter(term == 'p_sample')
+			broom::tidy(conf.int = T, conf.level = level) %>% dplyr::filter(term == 'p_sample')
 
 		Est = fit$estimate
 		Lo = fit$conf.low
