@@ -1,4 +1,4 @@
 library(testthat)
-library(PooledTest)
+library(PooledPrevalence)
 
-test_check("PooledTest")
+test_check("PooledPrevalence")
