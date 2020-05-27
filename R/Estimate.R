@@ -58,6 +58,7 @@
 #'   uncertainty bound} \item{Up}{The upper uncertainty bound} }
 #'
 #' @export
+#' @importFrom stats qnorm qbeta
 #'
 #' @examples
 #'
@@ -92,7 +93,7 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95, 
 	p_test <- k / w
 
 	if (method[1] == 'ML') {
-		Z <- stats::qnorm((1 - level)/2) %>% abs
+		Z <- qnorm((1 - level)/2) %>% abs
 
 		Up <- 1 - (1 - invlogit(logit(p_test) + Z * sqrt(1/(w * p_test * (1 - p_test)))))^(1/s)
 		Lo <- 1 - (1 - invlogit(logit(p_test) - Z * sqrt(1/(w * p_test * (1 - p_test)))))^(1/s)
@@ -109,9 +110,9 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95, 
 
 		#browser()
 
-		Up <- 1 - (1 - stats::qbeta(qu, a + k, b + w - k))^(1/s)
-		Lo <- 1 - (1 - stats::qbeta(ql, a + k, b + w - k))^(1/s)
-		Est <- 1 - (1 - stats::qbeta(.5, a + k, b + w - k))^(1/s)
+		Up <- 1 - (1 - qbeta(qu, a + k, b + w - k))^(1/s)
+		Lo <- 1 - (1 - qbeta(ql, a + k, b + w - k))^(1/s)
+		Est <- 1 - (1 - qbeta(.5, a + k, b + w - k))^(1/s)
 	}
 	else if (method[1] == 'HB') {
 
