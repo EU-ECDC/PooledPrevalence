@@ -9,8 +9,8 @@ simulate_pool_test(
   s = 12,
   p = 0.01,
   iters = 3000,
-  consider.sensitivity = F,
-  simulate.results = T,
+  consider.sensitivity = FALSE,
+  simulate.results = TRUE,
   asens = 8.88,
   bsens = 0.74,
   estimation.method = "B"
@@ -31,14 +31,14 @@ simulation (default \code{FALSE})}
 \item{simulate.results}{Add estimation results to the simulation (default
 \code{TRUE})}
 
-\item{asens}{\alpha Parameter of the Beta distribution for the sampling
+\item{asens}{\eqn{\alpha} Parameter of the Beta distribution for the sampling
 sensitivity (default \code{8.88})}
 
-\item{bsens}{\beta Parameter of the Beta distribution for the sampling
+\item{bsens}{\eqn{\beta} Parameter of the Beta distribution for the sampling
 sensitivity (default \code{0.74})}
 
 \item{estimation.method}{Whether to use Bayesian Conjugate \\(default\\) or
-MLE for the prevalence estimation (default \code{'B'})}
+MLE for the prevalence estimation (default \code{'CB'})}
 }
 \value{
 A dataframe with: the initial w, s, and p parameters; p.sample: the
@@ -52,24 +52,24 @@ Generate a sample of individuals with a given disease status informed by a
 chosen underlying diseases prevalence and risk variability. Then simulate a
 pooled test results from such sample. The process can be repeated for a
 number of iteration to have a distribution of results. The prevalence in each
-simulation is estimated through the \code{\link{get.estimates(method = 'CB')}}
+simulation is estimated through the \code{get_estimates(method = 'CB')}
 function.
 }
 \examples{
 # Simulate a study in a population with a disease risk of 1\%
 
 set.seed(1234)
-simulate.pool.test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = F)
+simulate_pool_test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = FALSE)
 
 # Same simulation this time considering false negatives due to sampling sensitivity,
-# with \emph{asens} and \emph{bsens} chosen to have a mean sensitivity of 95\% and
+# with \code{asens} and \code{bsens} chosen to have a mean sensitivity of 95\% and
 # a lower bound around 70\%
 
 set.seed(1234)
-simulate.pool.test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = T)
+simulate_pool_test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = TRUE)
 
-# use the \emph{iters} argument to create more simulations
+# use the \code{iters} argument to create more simulations
 
-simulate.pool.test(s = 8, w = 250, p = .01, iter = 3000, consider.sensitivity = F)
+simulate_pool_test(s = 8, w = 250, p = .01, iter = 3000, consider.sensitivity = FALSE)
 
 }

@@ -49,6 +49,9 @@ case of \code{method = 'HB'}}
 results in case of \code{method = 'CB'} and on the prevalence estimation in
 case of \code{method = 'HB'}}
 
+\item{consider.sensitivity}{whether to consider sample acquisition
+sensitivity in the HB estimation}
+
 \item{asens}{\eqn{\alpha} parameter of the Beta distribution describing the
 sample acquisition sensitivity}
 
@@ -95,7 +98,8 @@ model will be compiled only the first time.
 get_estimates(s = 10, w = 200, k = 30)
 
 # Same study now analyzed with a full bayesian estimation considering sampling sensitivity.
-# Notice the slightly higher estimated prevalence, due to the incorporation of the false negatives due to sampling
+# Notice the slightly higher estimated prevalence, due to the incorporation of the false
+# negatives due to sampling
 
 \dontrun{
    get_estimates(s = 10, w = 200, k = 30, method = 'HC')

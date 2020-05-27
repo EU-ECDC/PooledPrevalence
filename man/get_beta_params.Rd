@@ -9,9 +9,9 @@ get_beta_params(
   mid.val,
   max.val,
   levels = c(0.025, 0.975),
-  mid.val.type = c("mean", "median"),
-  force.proper = T,
-  plot = F
+  mid.val.type = c("mean", "median", "mode"),
+  force.proper = TRUE,
+  plot = FALSE
 )
 }
 \arguments{
@@ -26,7 +26,7 @@ of the distribution according to the \code{mid.val.type} parameter.}
 \code{max.val} parameters.}
 
 \item{mid.val.type}{Define which parameter of the distribution \code{mid.val}
-refers to, either the mean or the median.}
+refers to, either the mean, the median or the mode.}
 
 \item{force.proper}{Discourage values of alpha and beta < 1 during the
 optimization process. Tests should be done turning this option on and off
@@ -52,13 +52,14 @@ useful alfa and beta parameters.
 }
 \examples{
 
-# Estimate the alpha and beta parameter of a Beta distribution with 95\% boundaries near 0.0001 and 0.1 and mean value 0.015
+# Estimate the alpha and beta parameter of a Beta distribution with 95\%
+# boundaries near 0.0001 and 0.1 and mean value 0.015
 
-get.beta.params(.0001, .015, .1, force.proper = T, plot = T)
+get_beta_params(.0001, .015, .1, force.proper = TRUE, plot = TRUE)
 
 # Same inputs but now force.proper is FALSE
 
-get.beta.params(.0001, .015, .1, force.proper = F, plot = T)
+get_beta_params(.0001, .015, .1, force.proper = FALSE, plot = TRUE)
 
 }
 \seealso{
