@@ -11,7 +11,7 @@
 #' prevalence estimation in case of low sample size. The HB method allows also
 #' to take in account the sensitivity of the sample acquisition procedure,
 #' distibuted as ~ Beta(asens, bsens). The default parameters describe a mean
-#' sensitivity of 95% with a lower bound near 90%.
+#' sensitivity of 95% with a lower bound near 70%.
 #'
 #' The function takes in input the pool size, the number of tested pools and the
 #' positive pools. In alternative, to the actual test results, users can provide
