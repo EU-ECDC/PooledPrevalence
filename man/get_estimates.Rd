@@ -60,7 +60,7 @@ sample acquisition sensitivity}
 }
 \value{
 A named numeric matrix of height equal to the length of the parameter
-vectors. The matrix contains: \describe{ \item{p_est}{The positivity rate
+vectors. The matrix contains: \describe{\item{p_est}{The positivity rate
 for the pools in the study} \item{k}{The number of positive pools}
 \item{Est}{The estimated disease prevalence} \item{Lo}{The lower
 uncertainty bound} \item{Up}{The upper uncertainty bound} }
@@ -74,11 +74,11 @@ estimation (HB).
 \details{
 The CB and HB estimation allows the setting of priors, the first on the study
 results, the second on the prevalence estimates themselves; the default prior
-is a Beta(0.5, 0.5) distribution to account for the positive bias in the
+is a Beta(0.3, 0.3) distribution to account for the positive bias in the
 prevalence estimation in case of low sample size. The HB method allows also
 to take in account the sensitivity of the sample acquisition procedure,
 distibuted as ~ Beta(asens, bsens). The default parameters describe a mean
-sensitivity of 95\% with a lower bound near 90\%.
+sensitivity of 95\% with a lower bound near 70\%.
 
 The function takes in input the pool size, the number of tested pools and the
 positive pools. In alternative, to the actual test results, users can provide
