@@ -7,7 +7,7 @@
 #'
 #' The CB and HB estimation allows the setting of priors, the first on the study
 #' results, the second on the prevalence estimates themselves; the default prior
-#' is a Beta(0.5, 0.5) distribution to account for the positive bias in the
+#' is a Beta(0.3, 0.3) distribution to account for the positive bias in the
 #' prevalence estimation in case of low sample size. The HB method allows also
 #' to take in account the sensitivity of the sample acquisition procedure,
 #' distibuted as ~ Beta(asens, bsens). The default parameters describe a mean
