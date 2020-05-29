@@ -52,7 +52,7 @@
 #'   sensitivity in the HB estimation
 #'
 #' @return A named numeric matrix of height equal to the length of the parameter
-#'   vectors. The matrix contains: \describe{ \item{p_est}{The positivity rate
+#'   vectors. The matrix contains: \describe{\item{p_est}{The positivity rate
 #'   for the pools in the study} \item{k}{The number of positive pools}
 #'   \item{Est}{The estimated disease prevalence} \item{Lo}{The lower
 #'   uncertainty bound} \item{Up}{The upper uncertainty bound} }
