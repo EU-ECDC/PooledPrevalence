@@ -29,7 +29,6 @@
 #'   tested pools.
 #' @export
 #' @importFrom magrittr set_colnames
-#' @importFrom stats rbinom rbeta quantile
 #'
 #' @examples
 #' # Simulate a study in a population with a disease risk of 1%
@@ -69,7 +68,7 @@ simulate_pool_test <- function(w = 200, s = 12, p = .01, iters = 3000, consider.
 	res <- data.frame(w, s, p, p.distr, cases = test.cases, pos = test.pos.pools, neg = w - test.pos.pools)
 
 	if (simulate.results) {
-		p.est <- get_estimates(s = s, w = w, k = test.pos.pools)
+		p.est <- get_estimates(s = s, w = w, k = test.pos.pools)$estimates
 
 		p.est <- p.est[,colnames(p.est) != 'k']
 
