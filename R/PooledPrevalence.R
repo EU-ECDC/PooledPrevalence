@@ -17,8 +17,9 @@
 #'
 #'
 #' @importFrom dplyr %>%
+#' @importFrom stats median qnorm quantile rbeta rbinom
 #' @import ggplot2
-#' @import partykit
+#' @importFrom partykit ctree
 #'
 #' @docType package
 #' @name PooledPrevalence
