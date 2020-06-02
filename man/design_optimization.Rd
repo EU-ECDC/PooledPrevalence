@@ -5,20 +5,23 @@
 \title{Evaluate the performance of alternative pooled testing designs}
 \usage{
 design_optimization(
-  w.max = 100,
   s.max = 32,
+  w.max,
   p,
   n.max = w.max * s.max,
   w.min = 1,
-  s.min = 1
+  s.min = 1,
+  score.fun = function(grid) {     with(grid, log(err/p) + log(unc/p) + log(base.unc/p)
+    + log(abs(base.prev - p)/p) + log(w/s)) },
+  ...
 )
 }
 \arguments{
-\item{w.max}{Maximum number of tests which are consiedered affordable for the study.}
-
 \item{s.max}{Maximum number of individual samples in a pool. To be chosen
 after internal tests to evaluate possible loss in sensitivity due to
 pooling.}
+
+\item{w.max}{Maximum number of tests which are consiedered affordable for the study.}
 
 \item{p}{Hypothisized prevalence in the target population. It is better to
 chose a value higher than what it is really expected.}
@@ -28,6 +31,8 @@ chose a value higher than what it is really expected.}
 \item{w.min}{Minimum number of tests which is possible to perform.}
 
 \item{s.min}{Minimum pool size for pooling.}
+
+\item{...}{}
 }
 \value{
 
