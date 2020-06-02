@@ -44,6 +44,10 @@
 #' @param b \eqn{\beta} parameter of the Beta prior. The prior is on the test
 #'   results in case of \code{method = 'CB'} and on the prevalence estimation in
 #'   case of \code{method = 'HB'}
+#' @param iters Number of samples to draw when using methods CB e HB.
+#' @param hc.chains number of chains for the Hierarchical Bayesian method. By
+#'   default it's the number of cores determined by
+#'   \code{parallel::detectCores()} or as stored in \code{getOption("mc.cores")}
 #' @param asens \eqn{\alpha} parameter of the Beta distribution describing the
 #'   sample acquisition sensitivity
 #' @param bsens \eqn{\beta} parameter of the Beta distribution describing the
@@ -51,20 +55,22 @@
 #' @param consider.sensitivity whether to consider sample acquisition
 #'   sensitivity in the HB estimation
 #'
-#' @return A named numeric matrix of height equal to the length of the parameter
-#'   vectors. The matrix contains: \describe{\item{p_est}{The positivity rate
-#'   for the pools in the study} \item{k}{The number of positive pools}
-#'   \item{Est}{The estimated disease prevalence} \item{Lo}{The lower
-#'   uncertainty bound} \item{Up}{The upper uncertainty bound} }
+#' @return A list with two components: A named numeric matrix of height equal to
+#'   the length of the parameter vectors. The matrix contains:
+#'   \describe{\item{p_est}{The positivity rate for the pools in the study}
+#'   \item{k}{The number of positive pools} \item{Est}{The estimated disease
+#'   prevalence} \item{Lo}{The lower uncertainty bound} \item{Up}{The upper
+#'   uncertainty bound} } For methods CB and HB, if just one set of parameters is passed, a dataframe with the posterior
+#'   samples is returned.
 #'
 #' @export
-#' @importFrom stats qnorm qbeta
 #'
 #' @examples
 #'
 #' # Estimate prevalence from a study with 30 positive pools out of 200, with 10 samples per pool
+#' # the
 #'
-#' get_estimates(s = 10, w = 200, k = 30)
+#' get_estimates(s = 10, w = 200, k = 30)$estimates
 #'
 #' # Same study now analyzed with a full bayesian estimation considering sampling sensitivity.
 #' # Notice the slightly higher estimated prevalence, due to the incorporation of the false
@@ -77,7 +83,10 @@
 #'
 
 
-get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95, method = c('BC', 'HC', 'ML'), a = .3, b = .3, consider.sensitivity = T, asens = 8.88, bsens = 0.74) {
+get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95,
+													method = c('BC', 'HC', 'ML'), a = .3, b = .3, iters = 2000,
+													hc.chains = getOption("mc.cores", parallel::detectCores()),
+													consider.sensitivity = T, asens = 8.88, bsens = 0.74) {
 
 	if (is.null(p) & is.null(p_test) & is.null(k)) stop('Provide k, p or p_test')
 
@@ -92,6 +101,8 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95, 
 
 	p_test <- k / w
 
+	samples <- NULL
+
 	if (method[1] == 'ML') {
 		Z <- qnorm((1 - level)/2) %>% abs
 
@@ -99,6 +110,7 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95, 
 		Lo <- 1 - (1 - invlogit(logit(p_test) - Z * sqrt(1/(w * p_test * (1 - p_test)))))^(1/s)
 
 		Est <-  1 - (1 - p_test)^(1/s)
+
 	}
 	else if (method[1] == 'BC') {
 
@@ -113,29 +125,43 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95, 
 		Up <- 1 - (1 - qbeta(qu, a + k, b + w - k))^(1/s)
 		Lo <- 1 - (1 - qbeta(ql, a + k, b + w - k))^(1/s)
 		Est <- 1 - (1 - qbeta(.5, a + k, b + w - k))^(1/s)
+
+		if (length(Est) == 1) {
+			samples <- data.frame(p_test = rbeta(iters, a + k, b + w - k))
+			samples$p_sample <- 1 - (1 - samples$p_test)^(1/s)
+		}
 	}
 	else if (method[1] == 'HB') {
 
-		data_stan <- list(
-			w = w, # number of pools
-			k = k, # number of positive pools
-			s = s, # number of samples in each pool
-			a = a, b = b, # prior parameters for p_sample
-			asens = asens, bsens = bsens # prior for swabbing sensitivity
+		process.args <- list(
+			stan_data = list(
+				w = w, # number of pools
+				k = k, # number of positive pools
+				s = s, # number of samples in each pool
+				a = a, b = b, # prior parameters for p_sample
+				asens = asens, bsens = bsens # prior for swabbing sensitivity
+			),
+			chains =  hc.chains
 		)
 
 		if (!file.exists('Estimation_model.rds')) compile.estimation.model()
 
 		fit <- callr::r(function(x) {
-			rstan::sampling(object = readRDS('Estimation_model.rds'), data = x, iter = 1500, chains = 8)
-		}, args = list(data_stan)) %>%
-			broom::tidy(conf.int = T, conf.level = level) %>% dplyr::filter(term == 'p_sample')
+			rstan::sampling(object = readRDS('Estimation_model.rds'), data = x$stan_data, iter = iters, chains = x$chains, cores = x$chains)
+		}, args = process.args)
 
-		Est = fit$estimate
-		Lo = fit$conf.low
-		Up = fit$conf.high
+		Estimates <- broom::tidy(conf.int = T, conf.level = level) %>% dplyr::filter(term == 'p_sample')
+
+		Est = Estimates$estimate
+		Lo = Estimates$conf.low
+		Up = Estimates$conf.high
+
+		samples <- rstan::extract(fit, pars = c('p_sample', 'p_test', 'sens')) %>% as.data.frame()
 
 	}
 
-	cbind(p_test, k, Est, Lo, Up)
+	list(
+		samples = samples,
+		estimates = cbind(p_test, k, Est, Lo, Up)
+	)
 }
