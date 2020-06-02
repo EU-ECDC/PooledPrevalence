@@ -14,6 +14,8 @@ get_estimates(
   method = c("BC", "HC", "ML"),
   a = 0.3,
   b = 0.3,
+  iters = 2000,
+  hc.chains = getOption("mc.cores", parallel::detectCores()),
   consider.sensitivity = T,
   asens = 8.88,
   bsens = 0.74
@@ -49,6 +51,12 @@ case of \code{method = 'HB'}}
 results in case of \code{method = 'CB'} and on the prevalence estimation in
 case of \code{method = 'HB'}}
 
+\item{iters}{Number of samples to draw when using methods CB e HB.}
+
+\item{hc.chains}{number of chains for the Hierarchical Bayesian method. By
+default it's the number of cores determined by
+\code{parallel::detectCores()} or as stored in \code{getOption("mc.cores")}}
+
 \item{consider.sensitivity}{whether to consider sample acquisition
 sensitivity in the HB estimation}
 
@@ -59,11 +67,13 @@ sample acquisition sensitivity}
 sample acquisition sensitivity}
 }
 \value{
-A named numeric matrix of height equal to the length of the parameter
-vectors. The matrix contains: \describe{\item{p_est}{The positivity rate
-for the pools in the study} \item{k}{The number of positive pools}
-\item{Est}{The estimated disease prevalence} \item{Lo}{The lower
-uncertainty bound} \item{Up}{The upper uncertainty bound} }
+A list with two components: A named numeric matrix of height equal to
+the length of the parameter vectors. The matrix contains:
+\describe{\item{p_est}{The positivity rate for the pools in the study}
+\item{k}{The number of positive pools} \item{Est}{The estimated disease
+prevalence} \item{Lo}{The lower uncertainty bound} \item{Up}{The upper
+uncertainty bound} } For methods CB and HB, if just one set of parameters is passed, a dataframe with the posterior
+samples is returned.
 }
 \description{
 The function allow to estimate prevalence from the results of prevalence
@@ -94,8 +104,9 @@ model will be compiled only the first time.
 \examples{
 
 # Estimate prevalence from a study with 30 positive pools out of 200, with 10 samples per pool
+# the
 
-get_estimates(s = 10, w = 200, k = 30)
+get_estimates(s = 10, w = 200, k = 30)$estimates
 
 # Same study now analyzed with a full bayesian estimation considering sampling sensitivity.
 # Notice the slightly higher estimated prevalence, due to the incorporation of the false
