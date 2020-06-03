@@ -60,15 +60,14 @@
 #'   \describe{\item{p_est}{The positivity rate for the pools in the study}
 #'   \item{k}{The number of positive pools} \item{Est}{The estimated disease
 #'   prevalence} \item{Lo}{The lower uncertainty bound} \item{Up}{The upper
-#'   uncertainty bound} } For methods CB and HB, if just one set of parameters is passed, a dataframe with the posterior
-#'   samples is returned.
+#'   uncertainty bound} } For methods CB and HB, if just one set of parameters
+#'   is passed, a data frame with the posterior samples is returned.
 #'
 #' @export
 #'
 #' @examples
 #'
 #' # Estimate prevalence from a study with 30 positive pools out of 200, with 10 samples per pool
-#' # the
 #'
 #' get_estimates(s = 10, w = 200, k = 30)$estimates
 #'
@@ -77,9 +76,26 @@
 #' # negatives due to sampling
 #'
 #' \dontrun{
-#'    get_estimates(s = 10, w = 200, k = 30, method = 'HC')
+#'    get_estimates(s = 10, w = 200, k = 30, method = 'HC')$estimates
 #' }
 #'
+#' ## Through the Bayesian method is possible to perform Bayesian hypothesis testing
+#'
+#' # Which is the probability that the estimated prevalence from the previous example is
+#' # lower than 2%?
+#'
+#' sampled.prev <- get_estimates(s = 10, w = 200, k = 30, iters = 20000)$samples$p_sample
+#'
+#' mean(sampled.prev <= 0.02)
+#'
+#' # Which is the probability that the prevalence in region A is higher than that in region B,
+#' # given just 5 positive pools more?
+#'
+#' sampled.prev.A <- get_estimates(s = 10, w = 200, k = 35, iters = 20000)$samples$p_sample
+#'
+#' sampled.prev.B <- get_estimates(s = 10, w = 200, k = 30, iters = 20000)$samples$p_sample
+#'
+#' mean(sampled.prev.A >= sampled.prev.B)
 #'
 
 
@@ -156,12 +172,13 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95,
 		Lo = Estimates$conf.low
 		Up = Estimates$conf.high
 
-		samples <- rstan::extract(fit, pars = c('p_sample', 'p_test', 'sens')) %>% as.data.frame()
-
+		if (length(Est) == 1) {
+			samples <- rstan::extract(fit, pars = c('p_sample', 'p_test', 'sens')) %>% as.data.frame()
+		}
 	}
 
 	list(
 		samples = samples,
-		estimates = cbind(p_test, k, Est, Lo, Up)
+		estimates = data.frame(p_test, k, Est, Lo, Up)
 	)
 }
