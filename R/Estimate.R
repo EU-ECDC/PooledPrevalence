@@ -149,6 +149,8 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95,
 	}
 	else if (method[1] == 'HB') {
 
+		stop('Hierarchical Bayes method will be implemented soon!')
+
 		process.args <- list(
 			stan_data = list(
 				w = w, # number of pools
