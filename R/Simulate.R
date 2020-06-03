@@ -77,3 +77,77 @@ simulate_pool_test <- function(w = 200, s = 12, p = .01, iters = 3000, consider.
 
 	res
 }
+
+#' Formats the results of a simulation
+#'
+#' Adds more readable names, transforms estimates to percentages and adds uncertainty
+#' intervals around the simulated parameters. If the simulation are not already enriched
+#' via \code{enrich_simulation} it does it automatically.
+#'
+#' @param simulations The results of a call to \code{simulate_pool_test}
+#' @param level The uncertainty level around the estimates.
+#'
+#' @return A data frame with reformatted titles
+#' @export
+#'
+#' @examples
+#'
+#' sim <- simulate_pool_test(s = 8, w = 250, p = .01, iter = 3000, consider.sensitivity = FALSE)
+#'
+#' formatted.sim <- format_simulation(sim)
+#'
+
+format_simulation <- function(simulations, level = .95) {
+	lvl <- level
+
+	if ('unc' %nin% colnames(simulations)) simulations <- enrich_simulation(simulations)
+
+	out <- simulations %>%
+		dplyr::select(
+			'Estimated prevalence' = Est,
+			'Estimation uncertainty' = unc,
+			'Estimation error' = err,
+			'Unpooled study prevalence' = base.prev,
+			'Unpooled study uncertainty' = base.unc,
+			'Unpooled study error' = base.err
+		) %>%
+		dplyr::summarise(dplyr::across(dplyr::everything(), sumfun, level = lvl))
+}
+
+#' Enrich simulated estimations with accuracy information
+#'
+#' Given some simulated estimates, compute the uncertainty interval size and
+#' estimation error given a expected real prevalence. It is also computed the
+#' expected prevalence in an unpooled study, plus the relative estimation error
+#' and uncertainty size. The unpooled prevalence is computed using the Conjugate
+#' Bayes method, with Beta prior parameters both equal to 0.3
+#'
+#' @param simulations A data frame with as columns the pool size \code{s}, the
+#'   number of pools \code{w}, the number of positive cases \code{cases}, the
+#'   prevalence estimate \code{Est}, the upper \code{Up} and lower \code{Lo}
+#'   uncertainty the expected real prevalence \code{p}.
+#' @param a \eqn{\alpha} parameter of the prior Beta distribution for the
+#'   unpooled estimate.
+#' @param b \eqn{\beta} parameter of the prior Beta distribution for the
+#'   unpooled estimate.
+#'
+#' @return A data frame with added the uncertainty size \code{unc} and the
+#'   estimation error \code{err}. Also the estimated prevalence in an unpooled
+#'   study \code{base.prev} is reported, together with the unpooled uncertainty
+#'   \code{base.unc} and error \code{base.err}.
+#'
+#' @export
+
+enrich_simulation <- function(simulations, a = 0.3, b = 0.3) {
+
+	unpooled.a <- a + simulations$cases
+	unpooled.b <- with(simulations, b + w * s - cases)
+
+	dplyr::mutate(simulations,
+								unc = Up - Lo,
+								err = abs(Est - p),
+								base.prev = qbeta(.5, unpooled.a, unpooled.b),
+								base.unc = qbeta(.975, unpooled.a, unpooled.b) - qbeta(.025, unpooled.a, unpooled.b),
+								base.err = abs(base.prev - p)
+	)
+}
