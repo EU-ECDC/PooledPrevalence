@@ -31,19 +31,88 @@
 #' @param n.max Total number of individual samples that can be collected
 #' @param w.min Minimum number of tests which is possible to perform.
 #' @param s.min Minimum pool size for pooling.
+#' @param ...
 #'
 #' @return
 #' @export
-#' @importFrom stats qbeta
 #'
 #' @examples
-design_optimization <- function(w.max = 100, s.max = 32, p, n.max = w.max * s.max, w.min = 1, s.min = 1) {
+
+design_optimization <- function(s.max = 32, w.max, p, n.max = w.max * s.max,
+																w.min = 1, s.min = 1, max.groups = 50, score.fun = function(grid) {
+																	with(
+																		grid,
+																		log(err/p) + log(unc/p) + log(base.unc/p) + log(abs(base.prev - p)/p) + log(w/s)
+																	)
+																}, ...) {
+
 	grid <- expand.grid(s = s.min:s.max, w = w.min:w.max, p = p) %>%
-		dplyr::filter(w * s <= n.max) %>% {data.frame(., get_estimates(w = .$w, s = .$s, p = .$p))} %>%
+		dplyr::filter(w * s <= n.max) %>% {data.frame(., get_estimates(w = .$w, s = .$s, p = .$p)$estimates)} %>%
 		dplyr::mutate(
 			unc = Up - Lo,
 			err = abs(Est - p),
 			base.prev = qbeta(.5, .05 + p * w * s, .05 + (1 - p) * w * s),
 			base.unc = qbeta(.975, .05 + p * w * s, .05 + (1 - p) * w * s) - qbeta(.025, .05 + p * w * s, .05 + (1 - p) * w * s),
-			d = log(err/p) + log(unc/p) + log(base.unc/p) + log(abs(base.prev - p)/p) + log(w/s), acc = T)
+			base.err = abs(base.prev - p)
+		)
+
+	grid$score <- score.fun(grid)
+
+	mod <- ctree(score ~ w + s, grid, minbucket = round(nrow(grid)/max.groups), ...)
+
+	if (length(mod) == 1) {
+		rules <- data.frame(rule = '', mean.score = mean(mod$d))
+	} else {
+		grid$mean.score <- predict(mod, newdata = grid)
+	}
+
+	dplyr::group_by(grid, mean.score) %>%
+		dplyr::mutate(
+			dplyr::across(c(s,w), list(group.max = max, group.min = min)),
+			dplyr::across(matches('s_'), ~ replace(.x, .x %in% c(s.min, s.max), NA)),
+			dplyr::across(dplyr::matches('w_'), ~ replace(.x, .x %in% c(w.min, w.max), NA)),
+			s.rule = paste(s_group.min, '≤ s ≤', s_group.max),
+			w.rule = paste(w_group.min, '≤ w ≤', w_group.max),
+			dplyr::across(s.rule:w.rule, ~ stringr::str_remove_all(.x, 'NA ≤ | ≤ NA') %>% stringr::str_remove('^\\w$')),
+			rule = paste(s.rule, '&', w.rule) %>% stringr::str_remove_all('^ & | & $'),
+		) %>%
+		dplyr::arrange(mean.score) %>%
+		dplyr::mutate(rule = factor(rule, levels = unique(rule))) %>%
+		dplyr::select(!(s_group.max:w.rule))
 }
+
+#' Plot the optimization grid
+#'
+#' Take as input the grid of scores and the optimization windows produced by the
+#' optimization algorithm and produce a plot which represent the possible
+#' designs defined by pool size \code{s} and number of tested pools \code{w}.
+#' The plot is color coded to show the optimization window rules with the
+#' relative mean score.
+#'
+#' @param grid The grid produced by \code{design_optimization()}.
+#'
+#' @return A ggplot2 object
+#' @export
+#'
+#' @importFrom scales pretty_breaks
+#'
+#' @examples
+#'
+#' grid <- design_optimization(w.max = 2000, p = .05, n.max = 2000)
+#'
+#' plot_optimization_grid(grid)
+
+plot_optimization_grid <- function(grid) {
+	mutate(df,
+				 rule = sprintf('%s (%2g)', rule, round(mean.score, 2)),
+				 rule = factor(rule, levels = unique(rule))
+	) %>%
+		ggplot(aes(s, w, color = rule)) +
+		geom_point(alpha = .5, size = 3, stroke = 0, shape = 16) +w
+		scale_color_discrete('Rules (score)') +
+		scale_y_continuous(breaks = scales::pretty_breaks(10)) +
+		labs(x = 'Pool size', y = 'Number of pools') +
+		options("PooledPrevalence.ggtheme") +
+		theme(legend.position = 'left')
+}
+
