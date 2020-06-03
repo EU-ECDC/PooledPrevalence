@@ -22,21 +22,35 @@
 #' than expected,
 #'
 #'
-#' @param w.max Maximum number of tests which are consiedered affordable for the study.
+#' @param w.max Maximum number of tests which are considered affordable for the
+#'   study.
 #' @param s.max Maximum number of individual samples in a pool. To be chosen
 #'   after internal tests to evaluate possible loss in sensitivity due to
 #'   pooling.
-#' @param p Hypothisized prevalence in the target population. It is better to
-#'   chose a value higher than what it is really expected.
+#' @param p Expected prevalence in the target population. It is better to chose
+#'   a value higher than what it is really expected.
 #' @param n.max Total number of individual samples that can be collected
 #' @param w.min Minimum number of tests which is possible to perform.
 #' @param s.min Minimum pool size for pooling.
-#' @param ...
+#' @param max.groups The maximum number of rules that should be identified (the
+#'   actual number may be lower).
+#' @param score.fun The function that computes the score (lower is better). It
+#'   takes as argument grid, wich is the simulated results plus enrichment via
+#'   \code{enrich_simulation()}.
+#' @param ... Arguments to passed to \code{ctree()}, to control the creation of
+#'   the rules
 #'
 #' @return
 #' @export
 #'
 #' @examples
+#'
+#' # Explore possible test design given a maximum pool size of 12, 2000 maximum
+#' # number of tests and 2000 sampled individuals and a 5% expected prevalence
+#'
+#' grid <- design_optimization(s.max = 12, w.max = 2000, p = .05, n.max = 2000)
+#'
+#' plot_optimization_grid(grid)
 
 design_optimization <- function(s.max = 32, w.max, p, n.max = w.max * s.max,
 																w.min = 1, s.min = 1, max.groups = 50, score.fun = function(grid) {
@@ -47,14 +61,9 @@ design_optimization <- function(s.max = 32, w.max, p, n.max = w.max * s.max,
 																}, ...) {
 
 	grid <- expand.grid(s = s.min:s.max, w = w.min:w.max, p = p) %>%
+		dplyr::mutate(cases = round(p * w * s)) %>%
 		dplyr::filter(w * s <= n.max) %>% {data.frame(., get_estimates(w = .$w, s = .$s, p = .$p)$estimates)} %>%
-		dplyr::mutate(
-			unc = Up - Lo,
-			err = abs(Est - p),
-			base.prev = qbeta(.5, .05 + p * w * s, .05 + (1 - p) * w * s),
-			base.unc = qbeta(.975, .05 + p * w * s, .05 + (1 - p) * w * s) - qbeta(.025, .05 + p * w * s, .05 + (1 - p) * w * s),
-			base.err = abs(base.prev - p)
-		)
+		enrich_simulation()
 
 	grid$score <- score.fun(grid)
 
@@ -71,9 +80,9 @@ design_optimization <- function(s.max = 32, w.max, p, n.max = w.max * s.max,
 			dplyr::across(c(s,w), list(group.max = max, group.min = min)),
 			dplyr::across(matches('s_'), ~ replace(.x, .x %in% c(s.min, s.max), NA)),
 			dplyr::across(dplyr::matches('w_'), ~ replace(.x, .x %in% c(w.min, w.max), NA)),
-			s.rule = paste(s_group.min, '≤ s ≤', s_group.max),
-			w.rule = paste(w_group.min, '≤ w ≤', w_group.max),
-			dplyr::across(s.rule:w.rule, ~ stringr::str_remove_all(.x, 'NA ≤ | ≤ NA') %>% stringr::str_remove('^\\w$')),
+			s.rule = paste(s_group.min, '<= s <=', s_group.max),
+			w.rule = paste(w_group.min, '<= w <=', w_group.max),
+			dplyr::across(s.rule:w.rule, ~ stringr::str_remove_all(.x, 'NA <= | <= NA') %>% stringr::str_remove('^\\w$')),
 			rule = paste(s.rule, '&', w.rule) %>% stringr::str_remove_all('^ & | & $'),
 		) %>%
 		dplyr::arrange(mean.score) %>%
@@ -103,16 +112,22 @@ design_optimization <- function(s.max = 32, w.max, p, n.max = w.max * s.max,
 #' plot_optimization_grid(grid)
 
 plot_optimization_grid <- function(grid) {
-	mutate(df,
+	dplyr::mutate(grid,
 				 rule = sprintf('%s (%2g)', rule, round(mean.score, 2)),
 				 rule = factor(rule, levels = unique(rule))
 	) %>%
 		ggplot(aes(s, w, color = rule)) +
-		geom_point(alpha = .5, size = 3, stroke = 0, shape = 16) +w
+		geom_point(alpha = .5, size = 3, stroke = 0, shape = 16) +
 		scale_color_discrete('Rules (score)') +
 		scale_y_continuous(breaks = scales::pretty_breaks(10)) +
 		labs(x = 'Pool size', y = 'Number of pools') +
 		options("PooledPrevalence.ggtheme") +
 		theme(legend.position = 'left')
 }
+
+#
+# summarise_optimization_grid <- function(grid) {
+#
+# }
+
 
