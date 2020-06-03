@@ -136,17 +136,17 @@ evaluate_beta_params <- function(alpha, beta, lower.bound = .025, upper.bound = 
 
 	precis <- .000001
 
-	minq <- stats::qbeta(precis, a, b)
-	maxq <- stats::qbeta(1 - precis, a, b)
+	minq <- qbeta(precis, a, b)
+	maxq <- qbeta(1 - precis, a, b)
 
 	grid <- dplyr::tibble(
 		prev = seq(minq, maxq, 0.0001),
-		like = stats::dbeta(prev, a, b),
+		like = dbeta(prev, a, b),
 		post = like/sum(like)
 	)
 
 	params <- c(
-		stats::qbeta(c(lower.bound, mid, upper.bound), a, b) %>% set_names(c(lower.bound, mid, upper.bound) %>% percent),
+		qbeta(c(lower.bound, mid, upper.bound), a, b) %>% set_names(c(lower.bound, mid, upper.bound) %>% percent),
 		mean = a/(a+b),
 		sd = a * b / ((a + b)^2 * (a + b + 1)),
 		mode = if (a < 1 | b < 1) grid$prev[which.max(grid$like)] else (a - 1)/(a + b - 2)
@@ -159,7 +159,7 @@ evaluate_beta_params <- function(alpha, beta, lower.bound = .025, upper.bound = 
 			geom_point(
 				data = data.frame(
 					val = params[-5],
-					like = stats::dbeta(params[-5], a, b),
+					like = dbeta(params[-5], a, b),
 					col = c('Interval', 'Median', 'Interval', 'Mean', 'Mode')
 				),
 				aes(x = val, y = like/sum(grid$like), color = col), size = 3, alpha = .5) +
