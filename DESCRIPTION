@@ -39,7 +39,8 @@ Imports:
     magrittr,
     utils,
     partykit,
-    stringr
+    stringr,
+    scales
 License: EUPL
 URL: https://github.com/EU-ECDC/PooledPrevalence
 BugReports: https://github.com/EU-ECDC/PooledPrevalence/issues
