@@ -22,7 +22,7 @@ my_round <- function(z) {
 }
 
 
-sumfun <- function(x, level = .5) {
+sumfun <- function(x, level = .95) {
 
 	#, mode: {names(table(x))[which.max(table(x))]}
 	sprintf('%s, %s%%CI: [%s, %s]', my_round(median(x)), 100 * level, my_round(quantile(x, .5 - level/2)), my_round(quantile(x, .5 + level/2))) %>%
