@@ -11,6 +11,7 @@ design_optimization(
   n.max = w.max * s.max,
   w.min = 1,
   s.min = 1,
+  max.groups = 50,
   score.fun = function(grid) {     with(grid, log(err/p) + log(unc/p) + log(base.unc/p)
     + log(abs(base.prev - p)/p) + log(w/s)) },
   ...
@@ -21,10 +22,11 @@ design_optimization(
 after internal tests to evaluate possible loss in sensitivity due to
 pooling.}
 
-\item{w.max}{Maximum number of tests which are consiedered affordable for the study.}
+\item{w.max}{Maximum number of tests which are considered affordable for the
+study.}
 
-\item{p}{Hypothisized prevalence in the target population. It is better to
-chose a value higher than what it is really expected.}
+\item{p}{Expected prevalence in the target population. It is better to chose
+a value higher than what it is really expected.}
 
 \item{n.max}{Total number of individual samples that can be collected}
 
@@ -32,7 +34,15 @@ chose a value higher than what it is really expected.}
 
 \item{s.min}{Minimum pool size for pooling.}
 
-\item{...}{}
+\item{max.groups}{The maximum number of rules that should be identified (the
+actual number may be lower).}
+
+\item{score.fun}{The function that computes the score (lower is better). It
+takes as argument grid, wich is the simulated results plus enrichment via
+\code{enrich_simulation()}.}
+
+\item{...}{Arguments to passed to \code{ctree()}, to control the creation of
+the rules}
 }
 \value{
 
@@ -59,4 +69,13 @@ resources. It is suggested to choose a prevalence higher than the expected
 one (e.g. slightly higher than the expected higher possible value) in order
 not to end up with an underpowered study in case the prevalence is higher
 than expected,
+}
+\examples{
+
+# Explore possible test design given a maximum pool size of 12, 2000 maximum
+# number of tests and 2000 sampled individuals and a 5\% expected prevalence
+
+grid <- design_optimization(s.max = 12, w.max = 2000, p = .05, n.max = 2000)
+
+plot_optimization_grid(grid)
 }

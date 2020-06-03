@@ -72,8 +72,8 @@ the length of the parameter vectors. The matrix contains:
 \describe{\item{p_est}{The positivity rate for the pools in the study}
 \item{k}{The number of positive pools} \item{Est}{The estimated disease
 prevalence} \item{Lo}{The lower uncertainty bound} \item{Up}{The upper
-uncertainty bound} } For methods CB and HB, if just one set of parameters is passed, a dataframe with the posterior
-samples is returned.
+uncertainty bound} } For methods CB and HB, if just one set of parameters
+is passed, a data frame with the posterior samples is returned.
 }
 \description{
 The function allow to estimate prevalence from the results of prevalence
@@ -104,7 +104,6 @@ model will be compiled only the first time.
 \examples{
 
 # Estimate prevalence from a study with 30 positive pools out of 200, with 10 samples per pool
-# the
 
 get_estimates(s = 10, w = 200, k = 30)$estimates
 
@@ -113,8 +112,25 @@ get_estimates(s = 10, w = 200, k = 30)$estimates
 # negatives due to sampling
 
 \dontrun{
-   get_estimates(s = 10, w = 200, k = 30, method = 'HC')
+   get_estimates(s = 10, w = 200, k = 30, method = 'HC')$estimates
 }
 
+## Through the Bayesian method is possible to perform Bayesian hypothesis testing
+
+# Which is the probability that the estimated prevalence from the previous example is
+# lower than 2\%?
+
+sampled.prev <- get_estimates(s = 10, w = 200, k = 30, iters = 20000)$samples$p_sample
+
+mean(sampled.prev <= 0.02)
+
+# Which is the probability that the prevalence in region A is higher than that in region B,
+# given just 5 positive pools more?
+
+sampled.prev.A <- get_estimates(s = 10, w = 200, k = 35, iters = 20000)$samples$p_sample
+
+sampled.prev.B <- get_estimates(s = 10, w = 200, k = 30, iters = 20000)$samples$p_sample
+
+mean(sampled.prev.A >= sampled.prev.B)
 
 }
