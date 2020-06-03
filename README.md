@@ -9,4 +9,4 @@ In the package there are functions to simulate study outcomes, optimize the stud
 The package is based on a Bayesian framework, with the possibility to perform a full hierarchical analysis including uncertainty due to the sensitivity in acquiring the testing material.
 The package was developed at the occasion of the COVID-19 pandemic, but can be utilized in every laboratory based prevalence study.
 
-The package is still under development and contains as of 28/5/2020 the maximum likelihood and conjugate Bayesian solution (default) and the full Bayesian method and the optimization tools are expected to be available as of 3/6/2020.
+The package is still under development and contains as of 28/5/2020 the maximum likelihood and conjugate Bayesian solution (default). The full Bayesian method is expected to be available as of 4/6/2020.
