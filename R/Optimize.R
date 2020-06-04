@@ -27,8 +27,9 @@
 #' @param s.max Maximum number of individual samples in a pool. To be chosen
 #'   after internal tests to evaluate possible loss in sensitivity due to
 #'   pooling.
-#' @param p Expected prevalence in the target population. It is better to chose
-#'   a value higher than what it is really expected.
+#' @param p Maximal expected prevalence in the target population. It is better
+#'   to chose a value higher than what it is really expected in order not to
+#'   risk to design an underpowered study.
 #' @param n.max Total number of individual samples that can be collected
 #' @param w.min Minimum number of tests which is possible to perform.
 #' @param s.min Minimum pool size for pooling.
@@ -87,7 +88,8 @@ design_optimization <- function(s.max = 32, w.max, p, n.max = w.max * s.max,
 		) %>%
 		dplyr::arrange(mean.score) %>%
 		dplyr::mutate(rule = factor(rule, levels = unique(rule))) %>%
-		dplyr::select(!(s_group.max:w.rule))
+		dplyr::select(!(s_group.max:w.rule)) %>%
+		dplyr::ungroup()
 }
 
 #' Plot the optimization grid
@@ -117,12 +119,13 @@ plot_optimization_grid <- function(grid) {
 				 rule = factor(rule, levels = unique(rule))
 	) %>%
 		ggplot(aes(s, w, color = rule)) +
-		geom_point(alpha = .5, size = 3, stroke = 0, shape = 16) +
+		geom_point(size = 3, stroke = 0, shape = 16) +
 		scale_color_discrete('Rules (score)') +
 		scale_y_continuous(breaks = scales::pretty_breaks(10)) +
 		labs(x = 'Pool size', y = 'Number of pools') +
 		options("PooledPrevalence.ggtheme") +
-		theme(legend.position = 'left')
+		theme(legend.position = 'left') +
+		guides(color = guide_legend(ncol = 1))
 }
 
 #
