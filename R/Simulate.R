@@ -48,7 +48,7 @@
 #' simulate_pool_test(s = 8, w = 250, p = .01, iter = 3000, consider.sensitivity = FALSE)
 #'
 
-simulate_pool_test <- function(w = 200, s = 12, p = .01, iters = 3000, consider.sensitivity = FALSE, simulate.results = TRUE, asens = 8.88, bsens = 0.74, estimation.method = 'B') {
+simulate_pool_test <- function(s = 12, w = 200, p = .01, iters = 3000, consider.sensitivity = FALSE, simulate.results = TRUE, asens = 8.88, bsens = 0.74, estimation.method = 'B') {
 	if (estimation.method %nin% c('B', 'MLE')) stop('Only Bayesian Conjugate and ML estimation methods are allowed')
 
 	u <- 80 # Strangely, it does not seem to impact the simulations. to investigate
@@ -97,7 +97,7 @@ simulate_pool_test <- function(w = 200, s = 12, p = .01, iters = 3000, consider.
 #' formatted.sim <- format_simulation(sim)
 #'
 
-format_simulation <- function(simulations, level = .95) {
+format_simulation <- function(simulations, level = .95, reverse = T) {
 	lvl <- level
 
 	if ('unc' %nin% colnames(simulations)) simulations <- enrich_simulation(simulations)
@@ -112,6 +112,8 @@ format_simulation <- function(simulations, level = .95) {
 			'Unpooled study error' = base.err
 		) %>%
 		dplyr::summarise(dplyr::across(dplyr::everything(), sumfun, level = lvl))
+
+	if (reverse) t(out) else out
 }
 
 #' Enrich simulated estimations with accuracy information
