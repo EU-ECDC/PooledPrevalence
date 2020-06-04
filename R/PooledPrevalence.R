@@ -17,9 +17,13 @@
 #'
 #'
 #' @importFrom dplyr %>%
-#' @importFrom stats median qnorm quantile rbeta rbinom
+#' @importFrom stats
 #' @import ggplot2
 #' @importFrom partykit ctree
+#' @useDynLib rstanlm, .registration = TRUE
+#' @import methods
+#' @import Rcpp
+#' @importFrom rstan sampling
 #'
 #' @docType package
 #' @name PooledPrevalence
