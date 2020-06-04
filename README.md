@@ -64,10 +64,10 @@ Having access to the posterior samples allows Bayesian hypothesis testing for de
 results <- get_estimates(10, 200, 30, iters = 200000)
 
 mean(results$samples$p_sample < .02)
-#> [1] 0.89131
+#> [1] 0.892995
 ```
 
-In this case the probability of a mean prevalence below 2% is 89.2%, therefore there's not enough evidence in favor of removing the control measure. We may want to increase the sample size of the study or wait more. The Bayesian framework allows to simply add new samples the the already collected ones and simply update the analysis.
+In this case the probability of a mean prevalence below 2% is 89.3%, therefore there's not enough evidence in favor of removing the control measure. We may want to increase the sample size of the study or wait more. The Bayesian framework allows to simply add new samples the the already collected ones and simply update the analysis.
 
 
 ```r
@@ -81,7 +81,7 @@ new.positve.pools <- 9
 new.results <- get_estimates(10, 200 + new.tested.pools, 30 + new.positve.pools, iters = 200000)
 
 mean(new.results$samples$p_sample < .02)
-#> [1] 0.92137
+#> [1] 0.920105
 ```
 
 The new probability is 92.2%, so we have enough evidence to remove the control measure.
@@ -96,5 +96,5 @@ region.A <- get_estimates(10, 200, 30, iters = 200000)
 region.B <- get_estimates(10, 180, 32, iters = 200000)
 
 mean(region.A$samples$p_sample < region.B$samples$p_sample)
-#> [1] 0.767615
+#> [1] 0.768445
 ```

@@ -48,7 +48,7 @@ print(results$estimates)
 
 The object `results` contains both the estimates and, if a Bayesian method is used, the posterior samples of the distribution. The samples allows the inspection of the full posterior distribution of the prevalence. We suggest to use a high number of iteration for visualization purpose when `method = 'BC'` (the default) is used.
 
-```{r plot posterior}
+```{r plot posterior, dpi=300}
 
 results <- get_estimates(10, 200, 30, iters = 200000)
 
@@ -66,7 +66,7 @@ results <- get_estimates(10, 200, 30, iters = 200000)
 mean(results$samples$p_sample < .02)
 ```
 
-In this case the probability of a mean prevalence below 2% is 89.2%, therefore there's not enough evidence in favor of removing the control measure. We may want to increase the sample size of the study or wait more. The Bayesian framework allows to simply add new samples the the already collected ones and simply update the analysis.
+In this case the probability of a mean prevalence below 2% is `r percent(mean(results$samples$p_sample < .02))`, therefore there's not enough evidence in favor of removing the control measure. We may want to increase the sample size of the study or wait more. The Bayesian framework allows to simply add new samples the the already collected ones and simply update the analysis.
 
 ```{r hypothesis test new data}
 
