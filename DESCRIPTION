@@ -28,19 +28,23 @@ Description: A set of tools to help design a laboratory based prevalence study h
 	The package is based on a Bayesian framework, with the possibility to perform a full hierchical analysis including also uncertainty due to the sensitivity in acquiring the testing material.
 	The package was developed in the occasion of the COVID-19 pandemic, but can be utilized in every laboratory based prevalence study.
 Imports:
-    ggplot2,
-    stats,
     base,
-    dplyr,
-    rstan,
-    callr,
     broom,
-    Rfast,
+    callr,
+    dplyr,
+    ggplot2,
     magrittr,
-    utils,
+    methods,
     partykit,
+    Rcpp (>= 0.12.0),
+    RcppParallel (>= 5.0.1),
+    Rfast,
+    rstan (>= 2.18.1),
+    rstantools (>= 2.1.0),
+    scales,
+    stats,
     stringr,
-    scales
+    utils
 License: EUPL
 URL: https://github.com/EU-ECDC/PooledPrevalence
 BugReports: https://github.com/EU-ECDC/PooledPrevalence/issues
@@ -50,3 +54,14 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
 Suggests: 
     testthat
+Biarch: true
+Depends: 
+    R (>= 3.4.0)
+LinkingTo: 
+    BH (>= 1.66.0),
+    Rcpp (>= 0.12.0),
+    RcppEigen (>= 0.3.3.3.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.18.1),
+    StanHeaders (>= 2.18.0)
+SystemRequirements: GNU make
