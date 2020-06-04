@@ -48,7 +48,7 @@ print(results$estimates)
 
 The object `results` contains both the estimates and, if a Bayesian method is used, the posterior samples of the distribution. The samples allows the inspection of the full posterior distribution of the prevalence. We suggest to use a high number of iteration for visualization purpose when `method = 'BC'` (the default) is used.
 
-```{r plot posterior, dpi=300}
+```{r plot posterior, dpi=400}
 
 results <- get_estimates(10, 200, 30, iters = 200000)
 
@@ -81,15 +81,15 @@ new.results <- get_estimates(10, 200 + new.tested.pools, 30 + new.positve.pools,
 mean(new.results$samples$p_sample < .02)
 ```
 
-The new probability is 92.2%, so we have enough evidence to remove the control measure.
+The new probability is `r percent(mean(new.results$samples$p_sample < .02))`, so we have enough evidence to remove the control measure.
 
-In an alternative setting we want to ascertain the probability that region A has a lower prevalence or region B, with different numbers of sampled individuals
+Finally we want to ascertain the probability that region A, with 30 positive pools out of 200, has a lower prevalence or region B (38 positive pools out of 180).
 
 ```{r comparison}
 
 region.A <- get_estimates(10, 200, 30, iters = 200000)
 
-region.B <- get_estimates(10, 180, 32, iters = 200000)
+region.B <- get_estimates(10, 180, 38, iters = 200000)
 
 mean(region.A$samples$p_sample < region.B$samples$p_sample)
 ```
