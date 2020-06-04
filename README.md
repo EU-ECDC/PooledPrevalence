@@ -84,10 +84,10 @@ remove a certain control measure only if the average prevalence is below
 results <- get_estimates(10, 200, 30, iters = 200000)
 
 mean(results$samples$p_sample < .02)
-#> [1] 0.89293
+#> [1] 0.89101
 ```
 
-In this case the probability of a mean prevalence below 2% is 89.3%,
+In this case the probability of a mean prevalence below 2% is 89.1%,
 therefore there’s not enough evidence in favor of removing the control
 measure. We may want to increase the sample size of the study or wait
 more. The Bayesian framework allows to simply add new samples the the
@@ -104,10 +104,10 @@ new.positve.pools <- 9
 new.results <- get_estimates(10, 200 + new.tested.pools, 30 + new.positve.pools, iters = 200000)
 
 mean(new.results$samples$p_sample < .02)
-#> [1] 0.921745
+#> [1] 0.92091
 ```
 
-The new probability is 92.2%, so we have enough evidence to remove the
+The new probability is 92.1%, so we have enough evidence to remove the
 control measure.
 
 Finally we want to ascertain the probability that region A, with 30
@@ -121,7 +121,7 @@ region.A <- get_estimates(10, 200, 30, iters = 200000)
 region.B <- get_estimates(10, 180, 38, iters = 200000)
 
 mean(region.A$samples$p_sample < region.B$samples$p_sample)
-#> [1] 0.93971
+#> [1] 0.93991
 ```
 
 ## Study design optimization
@@ -196,10 +196,10 @@ simulation.high_w <- simulate_pool_test(s = 10, w = 200, p = 0.05)
 
 print(format_simulation(simulation.high_w))
 #>                            [,1]                           
-#> Estimated prevalence       "5%, 95%CI: [3.9%, 6.2%]"      
+#> Estimated prevalence       "5%, 95%CI: [4%, 6.2%]"        
 #> Estimation uncertainty     "2.2%, 95%CI: [1.9%, 2.5%]"    
 #> Estimation error           "0.38%, 95%CI: [0.021%, 1.2%]" 
-#> Unpooled study prevalence  "4.9%, 95%CI: [4%, 6%]"        
+#> Unpooled study prevalence  "5%, 95%CI: [4.1%, 6%]"        
 #> Unpooled study uncertainty "1.9%, 95%CI: [1.7%, 2.1%]"    
 #> Unpooled study error       "0.35%, 95%CI: [1.5e-05, 1.1%]"
 ```

@@ -106,7 +106,7 @@ A good starting point for validation is between 10 and 20 pools per size.
 In the following example we investigate the possible designs for a study with a maximal pool size of 15 and maximal number of tests and individuals to sample equal to 2000.
 We also set a maximal expected prevalence 0f 5%. Given the nature of pooled testing, the statistical accuracy decreases with the prevalence, so it is better to select a value which is higher than the prevalence we actually expect to find, in order not to end up with an underpowered study. 
 
-```{r optimization grid, dpi=400}
+```{r optimization grid, dpi=400, fig.height=10, fig.width=10}
 
 grid <- design_optimization(s.max = 15, w.max = 2000, p = .05, n.max = 2000)
 
