@@ -3,3 +3,4 @@
 ^LICENSE\.md$
 ^\.gitignore$
 ^cran-comments\.md$
+^README\.Rmd$
