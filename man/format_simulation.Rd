@@ -4,12 +4,14 @@
 \alias{format_simulation}
 \title{Formats the results of a simulation}
 \usage{
-format_simulation(simulations, level = 0.95)
+format_simulation(simulations, level = 0.95, reverse = T)
 }
 \arguments{
 \item{simulations}{The results of a call to \code{simulate_pool_test}}
 
 \item{level}{The uncertainty level around the estimates.}
+
+\item{reverse}{Whether to show the results in vertical format instead of wide.}
 }
 \value{
 A data frame with reformatted titles

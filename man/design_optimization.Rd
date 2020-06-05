@@ -25,8 +25,9 @@ pooling.}
 \item{w.max}{Maximum number of tests which are considered affordable for the
 study.}
 
-\item{p}{Expected prevalence in the target population. It is better to chose
-a value higher than what it is really expected.}
+\item{p}{Maximal expected prevalence in the target population. It is better
+to chose a value higher than what it is really expected in order not to
+risk to design an underpowered study.}
 
 \item{n.max}{Total number of individual samples that can be collected}
 

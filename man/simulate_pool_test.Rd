@@ -5,8 +5,8 @@
 \title{Simulation of pooled prevalence studies}
 \usage{
 simulate_pool_test(
-  w = 200,
   s = 12,
+  w = 200,
   p = 0.01,
   iters = 3000,
   consider.sensitivity = FALSE,
@@ -17,9 +17,9 @@ simulate_pool_test(
 )
 }
 \arguments{
-\item{w}{Number of pools to test (default \code{200})}
-
 \item{s}{Number of sampled individuals per pool (default \code{12})}
+
+\item{w}{Number of pools to test (default \code{200})}
 
 \item{p}{Expected population prevalence (default \code{0.01})}
 
