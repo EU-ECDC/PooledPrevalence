@@ -168,7 +168,7 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95,
 			rstan::sampling(object = readRDS('Estimation_model.rds'), data = x$stan_data, iter = iters, chains = x$chains, cores = x$chains)
 		}, args = process.args)
 
-		Estimates <- broom::tidy(conf.int = T, conf.level = level) %>% dplyr::filter(term == 'p_sample')
+		Estimates <- broom::tidy(conf.int = T, conf.level = level, estimate.method = "median") %>% dplyr::filter(term == 'p_sample')
 
 		Est = Estimates$estimate
 		Lo = Estimates$conf.low
