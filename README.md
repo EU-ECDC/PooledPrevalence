@@ -84,10 +84,10 @@ remove a certain control measure only if the average prevalence is below
 results <- get_estimates(10, 200, 30, iters = 200000)
 
 mean(results$samples$p_sample < .02)
-#> [1] 0.89101
+#> [1] 0.893015
 ```
 
-In this case the probability of a mean prevalence below 2% is 89.1%,
+In this case the probability of a mean prevalence below 2% is 89.3%,
 therefore there’s not enough evidence in favor of removing the control
 measure. We may want to increase the sample size of the study or wait
 more. The Bayesian framework allows to simply add new samples the the
@@ -104,10 +104,10 @@ new.positve.pools <- 9
 new.results <- get_estimates(10, 200 + new.tested.pools, 30 + new.positve.pools, iters = 200000)
 
 mean(new.results$samples$p_sample < .02)
-#> [1] 0.92091
+#> [1] 0.921705
 ```
 
-The new probability is 92.1%, so we have enough evidence to remove the
+The new probability is 92.2%, so we have enough evidence to remove the
 control measure.
 
 Finally we want to ascertain the probability that region A, with 30
@@ -121,7 +121,7 @@ region.A <- get_estimates(10, 200, 30, iters = 200000)
 region.B <- get_estimates(10, 180, 38, iters = 200000)
 
 mean(region.A$samples$p_sample < region.B$samples$p_sample)
-#> [1] 0.93991
+#> [1] 0.939365
 ```
 
 ## Study design optimization
@@ -136,10 +136,10 @@ available resources (number of sampled individuals `n.max` and maximum
 number of laboratory test to perform `w.max`), the expected (maximal)
 prevalence, and by the possible reduction in sensitivity due to an
 excessive number of samples in the same pool (`s.max`). This number
-depends from a number of factor (the pathogen, the sensitivity of the
+depends from a number of factors (the pathogen, the sensitivity of the
 test, the laboratory infrastructure and technique), therefore it needs
 to be decided after appropriate local validation tests. A good starting
-point for validation is between 10 and 20 pools per size.
+point for validation is between 10 and 20 samples per pool.
 
 In the following example we investigate the possible designs for a study
 with a maximal pool size of 15 and maximal number of tests and
@@ -185,23 +185,23 @@ simulation.low_w <- simulate_pool_test(s = 10, w = 108, p = 0.05)
 
 print(format_simulation(simulation.low_w))
 #>                            [,1]                           
-#> Estimated prevalence       "4.9%, 95%CI: [3.6%, 6.5%]"    
-#> Estimation uncertainty     "2.9%, 95%CI: [2.4%, 3.5%]"    
+#> Estimated prevalence       "4.9%, 95%CI: [3.7%, 6.7%]"    
+#> Estimation uncertainty     "2.9%, 95%CI: [2.5%, 3.5%]"    
 #> Estimation error           "0.48%, 95%CI: [5e-04, 1.7%]"  
-#> Unpooled study prevalence  "5%, 95%CI: [3.7%, 6.3%]"      
+#> Unpooled study prevalence  "5%, 95%CI: [3.7%, 6.4%]"      
 #> Unpooled study uncertainty "2.6%, 95%CI: [2.3%, 2.9%]"    
 #> Unpooled study error       "0.46%, 95%CI: [2.7e-05, 1.5%]"
 
 simulation.high_w <- simulate_pool_test(s = 10, w = 200, p = 0.05)
 
 print(format_simulation(simulation.high_w))
-#>                            [,1]                           
-#> Estimated prevalence       "5%, 95%CI: [4%, 6.2%]"        
-#> Estimation uncertainty     "2.2%, 95%CI: [1.9%, 2.5%]"    
-#> Estimation error           "0.38%, 95%CI: [0.021%, 1.2%]" 
-#> Unpooled study prevalence  "5%, 95%CI: [4.1%, 6%]"        
-#> Unpooled study uncertainty "1.9%, 95%CI: [1.7%, 2.1%]"    
-#> Unpooled study error       "0.35%, 95%CI: [1.5e-05, 1.1%]"
+#>                            [,1]                          
+#> Estimated prevalence       "5%, 95%CI: [3.9%, 6.1%]"     
+#> Estimation uncertainty     "2.2%, 95%CI: [1.9%, 2.4%]"   
+#> Estimation error           "0.38%, 95%CI: [0.021%, 1.2%]"
+#> Unpooled study prevalence  "5%, 95%CI: [4%, 5.9%]"       
+#> Unpooled study uncertainty "1.9%, 95%CI: [1.7%, 2.1%]"   
+#> Unpooled study error       "0.3%, 95%CI: [1.5e-05, 1.1%]"
 ```
 
 It is possible to see that in both simulation the statistical accuracy

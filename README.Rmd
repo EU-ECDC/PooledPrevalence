@@ -100,8 +100,8 @@ mean(region.A$samples$p_sample < region.B$samples$p_sample)
 
 The package provides a tool to help program the most efficient design for a prevalence study based on pooled testing. The methodology tries to maximize statistical accuracy while increasing the ratio between pool size and number of tests.
 
-The user needs to specify the operational limits that are driven by the available resources (number of sampled individuals `n.max` and maximum number of laboratory test to perform `w.max`), the expected (maximal) prevalence, and by the possible reduction in sensitivity due to an excessive number of samples in the same pool (`s.max`). This number depends from a number of factor (the pathogen, the sensitivity of the test, the laboratory infrastructure and technique), therefore it needs to be decided after appropriate local validation tests.
-A good starting point for validation is between 10 and 20 pools per size.
+The user needs to specify the operational limits that are driven by the available resources (number of sampled individuals `n.max` and maximum number of laboratory test to perform `w.max`), the expected (maximal) prevalence, and by the possible reduction in sensitivity due to an excessive number of samples in the same pool (`s.max`). This number depends from a number of factors (the pathogen, the sensitivity of the test, the laboratory infrastructure and technique), therefore it needs to be decided after appropriate local validation tests.
+A good starting point for validation is between 10 and 20 samples per pool.
 
 In the following example we investigate the possible designs for a study with a maximal pool size of 15 and maximal number of tests and individuals to sample equal to 2000.
 We also set a maximal expected prevalence 0f 5%. Given the nature of pooled testing, the statistical accuracy decreases with the prevalence, so it is better to select a value which is higher than the prevalence we actually expect to find, in order not to end up with an underpowered study. 
