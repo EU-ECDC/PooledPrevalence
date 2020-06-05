@@ -61,7 +61,7 @@ get_beta_params <- function(min.val, mid.val, max.val, levels = c(.025, .975), m
 
 		res <- sum((log(intended) - predicted)^2)
 
-		if (is.finite(res) & !is.nan(res) & if (force.proper) (a >= 1 & b >= 1) else TRUE) res else 10000
+		if (is.finite(res) & !is.nan(res) & if (force.proper) (a >= 1 & b >= 1) else TRUE) res else Inf
 	}
 
 	res <- optim(par = c(0, 0), fn = obj.fun, method = 'Nelder-Mead')
@@ -171,7 +171,7 @@ evaluate_beta_params <- function(alpha, beta, lower.bound = .025, upper.bound = 
 			scale_y_continuous(labels = percent) +
 			coord_cartesian(xlim = c(NA, maxq)) +
 			theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-			labs(x = 'Prevalence', y = 'PDF', color = NULL) +
+			labs(x = 'Value', y = 'PDF', color = NULL) +
 			options("PooledPrevalence.ggtheme")
 
 		print(p)
