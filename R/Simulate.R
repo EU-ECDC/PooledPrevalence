@@ -86,6 +86,7 @@ simulate_pool_test <- function(s = 12, w = 200, p = .01, iters = 3000, consider.
 #'
 #' @param simulations The results of a call to \code{simulate_pool_test}
 #' @param level The uncertainty level around the estimates.
+#' @param reverse Whether to show the results in vertical format instead of wide.
 #'
 #' @return A data frame with reformatted titles
 #' @export
