@@ -32,7 +32,7 @@ Imports:
     ggplot2,
     stats,
     base,
-    dplyr,
+    dplyr (>= 1.0.0),
     rstan,
     callr,
     broom,
