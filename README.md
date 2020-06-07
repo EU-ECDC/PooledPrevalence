@@ -60,17 +60,36 @@ print(results$estimates)
 The object `results` contains both the estimates and, if a Bayesian
 method is used, the posterior samples of the distribution. The samples
 allows the inspection of the full posterior distribution of the
-prevalence. We suggest to use a high number of iteration for
-visualization purpose when `method = 'BC'` (the default) is used.
+prevalence.
 
 ``` r
 
-results <- get_estimates(10, 200, 30, iters = 200000)
+results <- get_estimates(10, 200, 30)
 
-plot(density(results$samples$p_sample))
+plot(density(results$samples))
 ```
 
-<img src="man/figures/README-plot posterior-1.png" width="100%" />
+<img src="man/figures/README-plot_posterior-1.png" width="100%" />
+
+With Hierarchical Bayesian (HB) estimation is possible to account for
+the risk of false negatives due to incorrect sampling of material.
+Notice that the resulting estimates are therefore slightly higher. HB
+allows also a more correct evaluation of the uncertainty and should be
+the preferred method for the final analyses.
+
+``` r
+
+results <- get_estimates(10, 200, 30, method = 'HB')
+#> 
+#> 
+#> @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#> The Metropolis acceptance rate was 0.56020
+#> @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+plot(density(results$samples))
+```
+
+<img src="man/figures/README-Hierarchical_Bayes-1.png" width="100%" />
 
 ## Hypothesis testing
 
@@ -83,11 +102,11 @@ remove a certain control measure only if the average prevalence is below
 
 results <- get_estimates(10, 200, 30, iters = 200000)
 
-mean(results$samples$p_sample < .02)
-#> [1] 0.893015
+mean(results$samples < .02)
+#> [1] 0.89222
 ```
 
-In this case the probability of a mean prevalence below 2% is 89.3%,
+In this case the probability of a mean prevalence below 2% is 89.2%,
 therefore there’s not enough evidence in favor of removing the control
 measure. We may want to increase the sample size of the study or wait
 more. The Bayesian framework allows to simply add new samples the the
@@ -103,11 +122,11 @@ new.positve.pools <- 9
 
 new.results <- get_estimates(10, 200 + new.tested.pools, 30 + new.positve.pools, iters = 200000)
 
-mean(new.results$samples$p_sample < .02)
-#> [1] 0.921705
+mean(new.results$samples < .02)
+#> [1] 0.92104
 ```
 
-The new probability is 92.2%, so we have enough evidence to remove the
+The new probability is 92.1%, so we have enough evidence to remove the
 control measure.
 
 Finally we want to ascertain the probability that region A, with 30
@@ -120,8 +139,8 @@ region.A <- get_estimates(10, 200, 30, iters = 200000)
 
 region.B <- get_estimates(10, 180, 38, iters = 200000)
 
-mean(region.A$samples$p_sample < region.B$samples$p_sample)
-#> [1] 0.939365
+mean(region.A$samples < region.B$samples)
+#> [1] 0.939335
 ```
 
 ## Study design optimization
@@ -156,7 +175,7 @@ grid <- design_optimization(s.max = 15, w.max = 2000, p = .05, n.max = 2000)
 plot_optimization_grid(grid)
 ```
 
-<img src="man/figures/README-optimization grid-1.png" width="100%" />
+<img src="man/figures/README-optimization_grid-1.png" width="100%" />
 
 We can observe that the best “optimization window” is achieved with a
 pool size `s` of 10 or more and with a number of test `w` higher than
@@ -185,21 +204,21 @@ simulation.low_w <- simulate_pool_test(s = 10, w = 108, p = 0.05)
 
 print(format_simulation(simulation.low_w))
 #>                            [,1]                           
-#> Estimated prevalence       "4.9%, 95%CI: [3.7%, 6.7%]"    
-#> Estimation uncertainty     "2.9%, 95%CI: [2.5%, 3.5%]"    
-#> Estimation error           "0.48%, 95%CI: [5e-04, 1.7%]"  
+#> Estimated prevalence       "4.9%, 95%CI: [3.6%, 6.7%]"    
+#> Estimation uncertainty     "2.9%, 95%CI: [2.4%, 3.5%]"    
+#> Estimation error           "0.55%, 95%CI: [5e-04, 1.7%]"  
 #> Unpooled study prevalence  "5%, 95%CI: [3.7%, 6.4%]"      
 #> Unpooled study uncertainty "2.6%, 95%CI: [2.3%, 2.9%]"    
-#> Unpooled study error       "0.46%, 95%CI: [2.7e-05, 1.5%]"
+#> Unpooled study error       "0.47%, 95%CI: [2.7e-05, 1.5%]"
 
 simulation.high_w <- simulate_pool_test(s = 10, w = 200, p = 0.05)
 
 print(format_simulation(simulation.high_w))
 #>                            [,1]                          
-#> Estimated prevalence       "5%, 95%CI: [3.9%, 6.1%]"     
-#> Estimation uncertainty     "2.2%, 95%CI: [1.9%, 2.4%]"   
+#> Estimated prevalence       "5%, 95%CI: [4%, 6.2%]"       
+#> Estimation uncertainty     "2.2%, 95%CI: [1.9%, 2.5%]"   
 #> Estimation error           "0.38%, 95%CI: [0.021%, 1.2%]"
-#> Unpooled study prevalence  "5%, 95%CI: [4%, 5.9%]"       
+#> Unpooled study prevalence  "5%, 95%CI: [4%, 6%]"         
 #> Unpooled study uncertainty "1.9%, 95%CI: [1.7%, 2.1%]"   
 #> Unpooled study error       "0.3%, 95%CI: [1.5e-05, 1.1%]"
 ```

@@ -40,7 +40,7 @@ devtools::install_github("EU-ECDC/PooledPrevalence")
 
 The main goal of the package is to estimate prevalence in a population/risk group given the results of a pooled laboratory test. Let's assume a test with the following design: 2000 individual biological samples divided in 10 samples per testing pool (pool size), for a total of 200 pools. In this experiment we observe 30 positive pools (15%). With get_estimates is possible to estimate the underlying prevalence:
 
-```{r base estimation}
+```{r base_estimation}
 library(PooledPrevalence)
 
 results <- get_estimates(10, 200, 30)
@@ -48,29 +48,38 @@ results <- get_estimates(10, 200, 30)
 print(results$estimates)
 ```
 
-The object `results` contains both the estimates and, if a Bayesian method is used, the posterior samples of the distribution. The samples allows the inspection of the full posterior distribution of the prevalence. We suggest to use a high number of iteration for visualization purpose when `method = 'BC'` (the default) is used.
+The object `results` contains both the estimates and, if a Bayesian method is used, the posterior samples of the distribution. The samples allows the inspection of the full posterior distribution of the prevalence.
 
-```{r plot posterior, dpi=400}
+```{r plot_posterior, dpi=400}
 
-results <- get_estimates(10, 200, 30, iters = 200000)
+results <- get_estimates(10, 200, 30)
 
-plot(density(results$samples$p_sample))
+plot(density(results$samples))
+```
+
+With Hierarchical Bayesian (HB) estimation is possible to account for the risk of false negatives due to incorrect sampling of material. Notice that the resulting estimates are therefore slightly higher. HB allows also a more correct evaluation of the uncertainty and should be the preferred method for the final analyses.
+
+```{r Hierarchical_Bayes, dpi=400}
+
+results <- get_estimates(10, 200, 30, method = 'HB')
+
+plot(density(results$samples))
 ```
 
 ## Hypothesis testing
 
 Having access to the posterior samples allows Bayesian hypothesis testing for decision making. For example a certain region may want to remove a certain control measure only if the average prevalence is below 2% with a > 90% probability:
 
-```{r hypothesis test}
+```{r hypothesis_test}
 
 results <- get_estimates(10, 200, 30, iters = 200000)
 
-mean(results$samples$p_sample < .02)
+mean(results$samples < .02)
 ```
 
-In this case the probability of a mean prevalence below 2% is `r PooledPrevalence:::percent(mean(results$samples$p_sample < .02))`, therefore there's not enough evidence in favor of removing the control measure. We may want to increase the sample size of the study or wait more. The Bayesian framework allows to simply add new samples the the already collected ones and simply update the analysis.
+In this case the probability of a mean prevalence below 2% is `r PooledPrevalence:::percent(mean(results$samples < .02))`, therefore there's not enough evidence in favor of removing the control measure. We may want to increase the sample size of the study or wait more. The Bayesian framework allows to simply add new samples the the already collected ones and simply update the analysis.
 
-```{r hypothesis test new data}
+```{r hypothesis_test_new_data}
 
 old.results <- get_estimates(10, 200, 30, iters = 200000)
 
@@ -80,20 +89,20 @@ new.positve.pools <- 9
 
 new.results <- get_estimates(10, 200 + new.tested.pools, 30 + new.positve.pools, iters = 200000)
 
-mean(new.results$samples$p_sample < .02)
+mean(new.results$samples < .02)
 ```
 
-The new probability is `r PooledPrevalence:::percent(mean(new.results$samples$p_sample < .02))`, so we have enough evidence to remove the control measure.
+The new probability is `r PooledPrevalence:::percent(mean(new.results$samples < .02))`, so we have enough evidence to remove the control measure.
 
 Finally we want to ascertain the probability that region A, with 30 positive pools out of 200, has a lower prevalence or region B (38 positive pools out of 180).
 
-```{r estimate comparison}
+```{r estimate_comparison}
 
 region.A <- get_estimates(10, 200, 30, iters = 200000)
 
 region.B <- get_estimates(10, 180, 38, iters = 200000)
 
-mean(region.A$samples$p_sample < region.B$samples$p_sample)
+mean(region.A$samples < region.B$samples)
 ```
 
 ## Study design optimization
@@ -106,7 +115,7 @@ A good starting point for validation is between 10 and 20 samples per pool.
 In the following example we investigate the possible designs for a study with a maximal pool size of 15 and maximal number of tests and individuals to sample equal to 2000.
 We also set a maximal expected prevalence 0f 5%. Given the nature of pooled testing, the statistical accuracy decreases with the prevalence, so it is better to select a value which is higher than the prevalence we actually expect to find, in order not to end up with an underpowered study. 
 
-```{r optimization grid, dpi=400, fig.height=10, fig.width=10}
+```{r optimization_grid, dpi=400, fig.height=10, fig.width=10}
 
 grid <- design_optimization(s.max = 15, w.max = 2000, p = .05, n.max = 2000)
 
@@ -121,7 +130,7 @@ In order to decrease the risk of sensitivity problems we suggest to evaluate the
 
 Let's compare the results in term of statistical accuracy using `w = 109` and `w = 200`.
 
-```{r optimization results}
+```{r optimization_results}
 
 simulation.low_w <- simulate_pool_test(s = 10, w = 108, p = 0.05)
 
