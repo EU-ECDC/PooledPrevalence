@@ -14,6 +14,8 @@ design_optimization(
   max.groups = 50,
   score.fun = function(grid) {     with(grid, log(err/p) + log(unc/p) + log(base.unc/p)
     + log(abs(base.prev - p)/p) + log(w/s)) },
+  a = 0.3,
+  b = 0.3,
   ...
 )
 }
@@ -41,6 +43,10 @@ actual number may be lower).}
 \item{score.fun}{The function that computes the score (lower is better). It
 takes as argument grid, wich is the simulated results plus enrichment via
 \code{enrich_simulation()}.}
+
+\item{a}{The \eqn{alpha} parameter of the prior distribution.}
+
+\item{b}{The \eqn{beta} parameter of the prior distribution.}
 
 \item{...}{Arguments to passed to \code{ctree()}, to control the creation of
 the rules}

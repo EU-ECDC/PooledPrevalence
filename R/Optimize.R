@@ -38,6 +38,8 @@
 #' @param score.fun The function that computes the score (lower is better). It
 #'   takes as argument grid, wich is the simulated results plus enrichment via
 #'   \code{enrich_simulation()}.
+#' @param a The \eqn{alpha} parameter of the prior distribution.
+#' @param b The \eqn{beta} parameter of the prior distribution.
 #' @param ... Arguments to passed to \code{ctree()}, to control the creation of
 #'   the rules
 #'
@@ -59,12 +61,12 @@ design_optimization <- function(s.max = 32, w.max, p, n.max = w.max * s.max,
 																		grid,
 																		log(err/p) + log(unc/p) + log(base.unc/p) + log(abs(base.prev - p)/p) + log(w/s)
 																	)
-																}, ...) {
+																}, a = 0.3, b = 0.3, ...) {
 
 	grid <- expand.grid(s = s.min:s.max, w = w.min:w.max, p = p) %>%
 		dplyr::mutate(cases = round(p * w * s)) %>%
-		dplyr::filter(w * s <= n.max) %>% {data.frame(., get_estimates(w = .$w, s = .$s, p = .$p)$estimates)} %>%
-		enrich_simulation()
+		dplyr::filter(w * s <= n.max) %>% {data.frame(., get_estimates(w = .$w, s = .$s, p = .$p, a = a, b = b)$estimates)} %>%
+		enrich_simulation(a = a, b = b)
 
 	grid$score <- score.fun(grid)
 
