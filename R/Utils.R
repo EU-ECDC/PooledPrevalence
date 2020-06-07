@@ -29,6 +29,6 @@ sumfun <- function(x, level = .95) {
 		stringr::str_replace_all('0\\.\\d+', function(x) percent(as.numeric(x)))
 }
 
-compile.estimation.model <- function() {
-	invisible(rstan::stan_model('Estimation_model.stan', save_dso = T, auto_write = T))
-}
+# compile.estimation.model <- function() {
+# 	invisible(rstan::stan_model('Estimation_model.stan', save_dso = T, auto_write = T))
+# }
