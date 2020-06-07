@@ -45,8 +45,8 @@
 #'   results in case of \code{method = 'CB'} and on the prevalence estimation in
 #'   case of \code{method = 'HB'}
 #' @param iters Number of samples to draw when using methods CB e HB.
-#' @param hc.chains number of chains for the Hierarchical Bayesian method. By
-#'   default it's the number of cores determined by
+# @param hc.chains number of chains for the Hierarchical Bayesian method. By
+#   default it's the number of cores determined by
 #'   \code{parallel::detectCores()} or as stored in \code{getOption("mc.cores")}
 #' @param asens \eqn{\alpha} parameter of the Beta distribution describing the
 #'   sample acquisition sensitivity
@@ -75,33 +75,32 @@
 #' # Notice the slightly higher estimated prevalence, due to the incorporation of the false
 #' # negatives due to sampling
 #'
-#' \dontrun{
-#'    get_estimates(s = 10, w = 200, k = 30, method = 'HC')$estimates
-#' }
+#' get_estimates(s = 10, w = 200, k = 30, method = 'HB')$estimates
 #'
 #' ## Through the Bayesian method is possible to perform Bayesian hypothesis testing
 #'
 #' # Which is the probability that the estimated prevalence from the previous example is
 #' # lower than 2%?
 #'
-#' sampled.prev <- get_estimates(s = 10, w = 200, k = 30, iters = 20000)$samples$p_sample
+#' sampled.prev <- get_estimates(s = 10, w = 200, k = 30, iters = 20000)$samples
 #'
 #' mean(sampled.prev <= 0.02)
 #'
 #' # Which is the probability that the prevalence in region A is higher than that in region B,
 #' # given just 5 positive pools more?
 #'
-#' sampled.prev.A <- get_estimates(s = 10, w = 200, k = 35, iters = 20000)$samples$p_sample
+#' sampled.prev.A <- get_estimates(s = 10, w = 200, k = 35)$samples
 #'
-#' sampled.prev.B <- get_estimates(s = 10, w = 200, k = 30, iters = 20000)$samples$p_sample
+#' sampled.prev.B <- get_estimates(s = 10, w = 200, k = 30)$samples
 #'
 #' mean(sampled.prev.A >= sampled.prev.B)
+#'
 #'
 
 
 get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95,
-													method = c('BC', 'HC', 'ML'), a = .3, b = .3, iters = 2000,
-													hc.chains = getOption("mc.cores", parallel::detectCores()),
+													method = c('CB', 'HB', 'ML'), a = .3, b = .3, iters = 20000,
+													#hb.chains = getOption("mc.cores", parallel::detectCores()),
 													consider.sensitivity = T, asens = 8.88, bsens = 0.74) {
 
 	if (is.null(p) & is.null(p_test) & is.null(k)) stop('Provide k, p or p_test')
@@ -128,7 +127,7 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95,
 		Est <-  1 - (1 - p_test)^(1/s)
 
 	}
-	else if (method[1] == 'BC') {
+	else if (method[1] == 'CB') {
 
 		ql <- (1 - level)/2
 		qu <- level + ql
@@ -144,39 +143,79 @@ get_estimates <- function(s, w, k = NULL, p_test = NULL, p = NULL, level = .95,
 
 		if (length(Est) == 1) {
 			samples <- data.frame(p_test = rbeta(iters, a + k, b + w - k))
-			samples$p_sample <- 1 - (1 - samples$p_test)^(1/s)
+			samples <- 1 - (1 - samples$p_test)^(1/s)
 		}
 	}
 	else if (method[1] == 'HB') {
 
-		stop('Hierarchical Bayes method will be implemented soon!')
+		#stop('Hierarchical Bayes method will be implemented soon!')
+		if (nrow(data.frame(w, s, k)) > 1) stop('Only one set of parameters can be used with method HB')
+		# process.args <- list(
+		# 	stan_data = list(
+		# 		w = w, # number of pools
+		# 		k = k, # number of positive pools
+		# 		s = s, # number of samples in each pool
+		# 		a = a, b = b, # prior parameters for p_sample
+		# 		asens = asens, bsens = bsens # prior for swabbing sensitivity
+		# 	),
+		# 	chains =  hc.chains
+		# )
 
-		process.args <- list(
-			stan_data = list(
+		fit.args <- list(
 				w = w, # number of pools
 				k = k, # number of positive pools
 				s = s, # number of samples in each pool
 				a = a, b = b, # prior parameters for p_sample
 				asens = asens, bsens = bsens # prior for swabbing sensitivity
-			),
-			chains =  hc.chains
-		)
+			)
 
-		if (!file.exists('Estimation_model.rds')) compile.estimation.model()
+		# if (!file.exists('Estimation_model.rds')) compile.estimation.model()
+		#
+		# fit <- callr::r(function(x) {
+		# 	rstan::sampling(object = readRDS('Estimation_model.rds'), data = x$stan_data, iter = iters, chains = x$chains, cores = x$chains)
+		# }, args = process.args)
+		#
+		# Estimates <- broom::tidy(conf.int = T, conf.level = level, estimate.method = "median") %>% dplyr::filter(term == 'p_sample')
 
-		fit <- callr::r(function(x) {
-			rstan::sampling(object = readRDS('Estimation_model.rds'), data = x$stan_data, iter = iters, chains = x$chains, cores = x$chains)
-		}, args = process.args)
+		lk.fun <- function(p_sample, args) {
 
-		Estimates <- broom::tidy(conf.int = T, conf.level = level, estimate.method = "median") %>% dplyr::filter(term == 'p_sample')
+			if (p_sample < 0 | p_sample > 1) return(-Inf)
 
-		Est = Estimates$estimate
-		Lo = Estimates$conf.low
-		Up = Estimates$conf.high
+			if (consider.sensitivity) p_sample <- p_sample * rbeta(1,  args$asens,  args$bsens)
+
+			p_test <- 1 - dbinom(0, args$s, p_sample)
+
+			dbinom(args$k, args$w, p_test, log = T) + dbeta(p_sample, args$a, args$b, log = T)
+		}
+
+		ql <- (1 - level)/2
+		qu <- level + ql
+
+
+		fit <- MCMCmetrop1R(lk.fun,
+								 theta.init = 1 - (1 - 30/200)^(1/10),
+								 args = fit.args,
+								 mcmc = iters
+								 )
+
+		# Est = Estimates$estimate
+		# Lo = Estimates$conf.low
+		# Up = Estimates$conf.high
+
+		Est <- quantile(fit, .5)
+		Lo <- quantile(fit, ql)
+		Up <- quantile(fit, qu)
+
+		# if (length(Est) == 1) {
+		# 	samples <- rstan::extract(fit, pars = c('p_sample', 'p_test', 'sens')) %>% as.data.frame()
+		# }
 
 		if (length(Est) == 1) {
-			samples <- rstan::extract(fit, pars = c('p_sample', 'p_test', 'sens')) %>% as.data.frame()
+			samples <- fit[,1]
 		}
+	}
+	else {
+		stop('Unknown "method" value')
 	}
 
 	list(

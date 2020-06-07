@@ -11,11 +11,10 @@ get_estimates(
   p_test = NULL,
   p = NULL,
   level = 0.95,
-  method = c("BC", "HC", "ML"),
+  method = c("CB", "HB", "ML"),
   a = 0.3,
   b = 0.3,
-  iters = 2000,
-  hc.chains = getOption("mc.cores", parallel::detectCores()),
+  iters = 20000,
   consider.sensitivity = T,
   asens = 8.88,
   bsens = 0.74
@@ -51,10 +50,7 @@ case of \code{method = 'HB'}}
 results in case of \code{method = 'CB'} and on the prevalence estimation in
 case of \code{method = 'HB'}}
 
-\item{iters}{Number of samples to draw when using methods CB e HB.}
-
-\item{hc.chains}{number of chains for the Hierarchical Bayesian method. By
-default it's the number of cores determined by
+\item{iters}{Number of samples to draw when using methods CB e HB.
 \code{parallel::detectCores()} or as stored in \code{getOption("mc.cores")}}
 
 \item{consider.sensitivity}{whether to consider sample acquisition
@@ -111,26 +107,25 @@ get_estimates(s = 10, w = 200, k = 30)$estimates
 # Notice the slightly higher estimated prevalence, due to the incorporation of the false
 # negatives due to sampling
 
-\dontrun{
-   get_estimates(s = 10, w = 200, k = 30, method = 'HC')$estimates
-}
+get_estimates(s = 10, w = 200, k = 30, method = 'HB')$estimates
 
 ## Through the Bayesian method is possible to perform Bayesian hypothesis testing
 
 # Which is the probability that the estimated prevalence from the previous example is
 # lower than 2\%?
 
-sampled.prev <- get_estimates(s = 10, w = 200, k = 30, iters = 20000)$samples$p_sample
+sampled.prev <- get_estimates(s = 10, w = 200, k = 30, iters = 20000)$samples
 
 mean(sampled.prev <= 0.02)
 
 # Which is the probability that the prevalence in region A is higher than that in region B,
 # given just 5 positive pools more?
 
-sampled.prev.A <- get_estimates(s = 10, w = 200, k = 35, iters = 20000)$samples$p_sample
+sampled.prev.A <- get_estimates(s = 10, w = 200, k = 35)$samples
 
-sampled.prev.B <- get_estimates(s = 10, w = 200, k = 30, iters = 20000)$samples$p_sample
+sampled.prev.B <- get_estimates(s = 10, w = 200, k = 30)$samples
 
 mean(sampled.prev.A >= sampled.prev.B)
+
 
 }
