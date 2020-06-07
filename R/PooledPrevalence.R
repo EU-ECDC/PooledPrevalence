@@ -20,6 +20,7 @@
 #' @importFrom stats median qnorm quantile rbeta rbinom
 #' @import ggplot2
 #' @importFrom partykit ctree
+#' @importFrom MCMCpack MCMCmetrop1R
 #'
 #' @docType package
 #' @name PooledPrevalence
