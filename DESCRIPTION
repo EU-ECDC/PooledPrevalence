@@ -33,7 +33,7 @@ Imports:
     stats,
     base,
     dplyr (>= 1.0.0),
-    rstan,
+    MCMCpack,
     callr,
     broom,
     Rfast,
