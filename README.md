@@ -14,14 +14,14 @@ to pool and the total number of tests to perform, focusing on achieving
 the maximum estimation performance (low uncertainty and estimation
 error) while keeping the total amount of tests low. In the package there
 are functions to simulate study outcomes, optimize the study design, and
-finally analyze the results of a pooled study to retrieve the relative
+finally, analyze the results of a pooled study to retrieve the 
 prevalence estimates. The package is based on a Bayesian framework, with
 the possibility to perform a full hierarchical analysis including
 uncertainty due to the sensitivity in acquiring the testing material.
 The package was developed at the occasion of the COVID-19 pandemic, but
 can be utilized in every laboratory based prevalence study.
 
-This package is produced as a companion to the following guideline from
+This package is produced as a companion to the following guidance from
 the European Center for Disease Prevention and Control:
 <https://www.ecdc.europa.eu/sites/default/files/documents/Methodology-estimating-point-prevalence%20-SARS-CoV-2-infection-pooled-RT-PCR-testing.pdf>.
 
@@ -40,11 +40,11 @@ devtools::install_github("EU-ECDC/PooledPrevalence")
 ## Basic usage
 
 The main goal of the package is to estimate prevalence in a
-population/risk group given the results of a pooled laboratory test.
+population/risk group, given the results of a pooled laboratory test.
 Let’s assume a test with the following design: 2000 individual
 biological samples divided in 10 samples per testing pool (pool size),
 for a total of 200 pools. In this experiment we observe 30 positive
-pools (15%). With get\_estimates is possible to estimate the underlying
+pools (15%). With get\_estimates it is possible to estimate the underlying
 prevalence:
 
 ``` r
