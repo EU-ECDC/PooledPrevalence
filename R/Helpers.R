@@ -4,9 +4,9 @@
 #' The user need to pass the expected mean/median of the distibution and the
 #' uncertainty boundaries. Then an optimizion algorithm is used to the find the
 #' alpha and beta parameters of the beta that reproduce a shape as similar as
-#' possible to the expected one. The method don't assure perfect coverage,
+#' possible to the expected one. The method doesn't assure perfect coverage,
 #' either for optimization limits or because the expected shape is not allowed
-#' by the Beta distribution, but is a starting point for further esploration of
+#' by the Beta distribution, but is a starting point for further exploration of
 #' useful alfa and beta parameters.
 #'
 #' @param min.val Expected lower uncertainty bound of the ditribution.
