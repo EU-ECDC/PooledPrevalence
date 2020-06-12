@@ -36,7 +36,7 @@ devtools::install_github("EU-ECDC/PooledPrevalence")
 ```
 ## Basic usage
 
-The main goal of the package is to estimate prevalence in a population/risk group, given the results of a pooled laboratory test. Let's assume a test with the following design: 2000 individual biological samples divided in 10 samples per testing pool (pool size), for a total of 200 pools. In this experiment we observe 30 positive pools (15%). With get_estimates it is possible to estimate the underlying prevalence:
+The main goal of the package is to estimate prevalence in a population/risk group, given the results of a pooled laboratory test. Let's assume a test with the following design: 2000 individual biological samples divided in 10 samples per testing pool (pool size), for a total of 200 pools. In this experiment we observe 30 positive pools (15%). With `get_estimates()` it is possible to estimate the underlying prevalence:
 
 ```{r base_estimation}
 library(PooledPrevalence)
@@ -120,7 +120,9 @@ grid <- design_optimization(s.max = 15, w.max = 2000, p = .05, n.max = 2000)
 plot_optimization_grid(grid)
 ```
 
-We can observe that the best "optimization window" is achieved with a pool size `s` of 10 or more and with a number of test `w` higher than 108.
+The plot shows the "optimization windows" with different colors, ordered by the average score (lower is better).
+
+We can observe that the best window is achieved with a pool size `s` of 10 or more and with a number of test `w` higher than 108.
 
 Once a window has been identified, simulation tests can be used to evaluate the statistical performance. The tests need to be carried on specific couples of values of pool size `s` and number of tests `w`.
 
