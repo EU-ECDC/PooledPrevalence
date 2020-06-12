@@ -10,7 +10,7 @@
 #' useful alfa and beta parameters.
 #'
 #' @param min.val Expected lower uncertainty bound of the ditribution.
-#' @param mid.val Expected central value. Can represent the median or the mean
+#' @param mid.val Expected central value. Can represent the mean, the median or the mode
 #'   of the distribution according to the \code{mid.val.type} parameter.
 #' @param max.val Expected upper uncertainty bound of the ditribution.
 #' @param levels Uncertainty level corresponding to the \code{min.val} and
@@ -78,7 +78,7 @@ get_beta_params <- function(min.val, mid.val, max.val, levels = c(.025, .975), m
 #' Inspect the shape of a beta distribution described by the \eqn{\alpha} and
 #' \eqn{\beta} arguments
 #'
-#' This function is useful in define priors based on the beta distribution.
+#' This function is useful in defining priors based on the beta distribution.
 #' Given the \eqn{\alpha} and \eqn{\beta} parameters, it returns relevant
 #' statistics of the distribution and boundary points to help understand its
 #' characteristics. Optionally the full PDF of the distribution is plotted.
