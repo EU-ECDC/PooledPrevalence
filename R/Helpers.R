@@ -119,7 +119,7 @@ get_beta_params <- function(min.val, mid.val, max.val, levels = c(.025, .975), m
 #'
 #' # If we again center the mean at 0.05 but this time the precision is lowered to 15,
 #' # \code{alpha} goes below 1 and this produces a distribution with most of the mass
-#' # at zero. The mode value calculated analitycally in this case would be wrong (negative)
+#' # at zero. The mode value calculated analytically in this case would be wrong (negative)
 #' # so the empirical mode is shown as an approximation
 #'
 #' evaluate_beta_params(.05 * 15, (1 - .05) * 15)
@@ -169,7 +169,7 @@ evaluate_beta_params <- function(alpha, beta, lower.bound = .025, upper.bound = 
 			# geom_point(aes(x = params['97.5%'], y = dbeta(params['97.5%'], a, b), color = 'Interval'), size = 3, alpha = .5) +
 			scale_x_continuous(labels = percent) +
 			scale_y_continuous(labels = percent) +
-			coord_cartesian(xlim = c(NA, maxq)) +
+			coord_cartesian(xlim = c(NA, maxq), ylim = c(NA, cut.plot.at)) +
 			theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
 			labs(x = 'Value', y = 'PDF', color = NULL) +
 			options("PooledPrevalence.ggtheme")
