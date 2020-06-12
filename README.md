@@ -80,7 +80,7 @@ results <- get_estimates(10, 200, 30, method = 'HB')
 #> 
 #> 
 #> @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#> The Metropolis acceptance rate was 0.67610
+#> The Metropolis acceptance rate was 0.75312
 #> @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 plot(density(results$samples))
@@ -100,7 +100,7 @@ if the average prevalence is below 2% with a \> 90% probability:
 results <- get_estimates(10, 200, 30, iters = 200000)
 
 mean(results$samples < .02)
-#> [1] 0.893245
+#> [1] 0.892735
 ```
 
 In this case the probability of a mean prevalence below 2% is 89.3%,
@@ -120,10 +120,10 @@ new.positve.pools <- 9
 new.results <- get_estimates(10, 200 + new.tested.pools, 30 + new.positve.pools, iters = 200000)
 
 mean(new.results$samples < .02)
-#> [1] 0.92221
+#> [1] 0.92148
 ```
 
-The new probability is 92.2%, so we have enough evidence to remove the
+The new probability is 92.1%, so we have enough evidence to remove the
 control measure.
 
 Finally, we want to ascertain the probability that region A, with 30
@@ -137,7 +137,7 @@ region.A <- get_estimates(10, 200, 30, iters = 200000)
 region.B <- get_estimates(10, 180, 38, iters = 200000)
 
 mean(region.A$samples < region.B$samples)
-#> [1] 0.939065
+#> [1] 0.94025
 ```
 
 ## Study design optimization
@@ -177,8 +177,9 @@ plot_optimization_grid(grid)
 The plot shows the “optimization windows” with different colors, ordered
 by the average score (lower is better).
 
-We can observe that the best window is achieved with a pool size `s` of
-10 or more and with a number of test `w` higher than 108.
+We can observe that the best window (score: -10.89) is achieved with a
+pool size `s` of 10 or more and with a number of test `w` higher than
+108.
 
 Once a window has been identified, simulation tests can be used to
 evaluate the statistical performance. The tests need to be carried on
@@ -205,8 +206,8 @@ print(format_simulation(simulation.low_w))
 #>                            [,1]                           
 #> Estimated prevalence       "4.9%, 95%CI: [3.6%, 6.5%]"    
 #> Estimation uncertainty     "2.9%, 95%CI: [2.4%, 3.5%]"    
-#> Estimation error           "0.55%, 95%CI: [5e-04, 1.7%]"  
-#> Unpooled study prevalence  "5%, 95%CI: [3.7%, 6.4%]"      
+#> Estimation error           "0.48%, 95%CI: [5e-04, 1.7%]"  
+#> Unpooled study prevalence  "5%, 95%CI: [3.7%, 6.3%]"      
 #> Unpooled study uncertainty "2.6%, 95%CI: [2.3%, 2.9%]"    
 #> Unpooled study error       "0.46%, 95%CI: [2.7e-05, 1.5%]"
 
@@ -216,8 +217,8 @@ print(format_simulation(simulation.high_w))
 #>                            [,1]                           
 #> Estimated prevalence       "5%, 95%CI: [4%, 6.2%]"        
 #> Estimation uncertainty     "2.2%, 95%CI: [1.9%, 2.5%]"    
-#> Estimation error           "0.33%, 95%CI: [0.021%, 1.2%]" 
-#> Unpooled study prevalence  "5%, 95%CI: [4%, 5.9%]"        
+#> Estimation error           "0.38%, 95%CI: [0.021%, 1.2%]" 
+#> Unpooled study prevalence  "5%, 95%CI: [4.1%, 6%]"        
 #> Unpooled study uncertainty "1.9%, 95%CI: [1.7%, 2.1%]"    
 #> Unpooled study error       "0.35%, 95%CI: [1.5e-05, 1.1%]"
 ```

@@ -122,7 +122,7 @@ plot_optimization_grid(grid)
 
 The plot shows the "optimization windows" with different colors, ordered by the average score (lower is better).
 
-We can observe that the best window is achieved with a pool size `s` of 10 or more and with a number of test `w` higher than 108.
+We can observe that the best window (score: -10.89) is achieved with a pool size `s` of 10 or more and with a number of test `w` higher than 108.
 
 Once a window has been identified, simulation tests can be used to evaluate the statistical performance. The tests need to be carried on specific couples of values of pool size `s` and number of tests `w`.
 
