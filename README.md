@@ -25,9 +25,6 @@ This package is produced as a companion to the following guidance from
 the European Center for Disease Prevention and Control:
 <https://www.ecdc.europa.eu/sites/default/files/documents/Methodology-estimating-point-prevalence%20-SARS-CoV-2-infection-pooled-RT-PCR-testing.pdf>.
 
-\!\!DISCLAIMER: the Hierarchical Bayes method of estimation is still
-under development
-
 ## Installation
 
 You can install the released version of PooledPrevalence with:
