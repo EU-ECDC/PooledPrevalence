@@ -58,7 +58,7 @@ evaluate_beta_params(.05 * (30 - 2) + 1, (1 - .05) * (30 - 2) + 1)
 
 # If we again center the mean at 0.05 but this time the precision is lowered to 15,
 # \code{alpha} goes below 1 and this produces a distribution with most of the mass
-# at zero. The mode value calculated analitycally in this case would be wrong (negative)
+# at zero. The mode value calculated analytically in this case would be wrong (negative)
 # so the empirical mode is shown as an approximation
 
 evaluate_beta_params(.05 * 15, (1 - .05) * 15)
