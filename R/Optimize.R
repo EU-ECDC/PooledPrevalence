@@ -70,10 +70,15 @@ design_optimization <- function(s.max = 32, w.max, p, n.max = w.max * s.max,
 
 	grid$score <- score.fun(grid)
 
+	if (any(grid$score == -Inf)) warning('-Inf in the optimization score, due to zero estimation error. Put a score 10 times greater than the minimum finite score. Probably you passed an extreme design to the algotrithm. Results may be biased.')
+
+	grid$score[grid$score == -Inf] <- 10 * min(grid$score[is.finite(grid$score)])
+
 	mod <- ctree(score ~ w + s, grid, minbucket = round(nrow(grid)/max.groups), ...)
 
 	if (length(mod) == 1) {
-		rules <- data.frame(rule = '', mean.score = mean(mod$d))
+		#grid$mean.score <- mean(grid$score)
+		stop('No optimization was found')
 	} else {
 		grid$mean.score <- predict(mod, newdata = grid)
 	}
@@ -124,6 +129,7 @@ plot_optimization_grid <- function(grid) {
 		geom_point(size = 3, stroke = 0, shape = 16) +
 		scale_color_discrete('Rules (score)') +
 		scale_y_continuous(breaks = scales::pretty_breaks(10)) +
+		scale_x_continuous(breaks = function(x) round(x[1]):round(x[2])) +
 		labs(x = 'Pool size', y = 'Number of pools') +
 		options("PooledPrevalence.ggtheme") +
 		theme(legend.position = 'left') +
