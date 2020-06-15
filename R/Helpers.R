@@ -10,8 +10,9 @@
 #' useful alfa and beta parameters.
 #'
 #' @param min.val Expected lower uncertainty bound of the ditribution.
-#' @param mid.val Expected central value. Can represent the mean, the median or the mode
-#'   of the distribution according to the \code{mid.val.type} parameter.
+#' @param mid.val Expected central value. Can represent the mean, the median or
+#'   the mode of the distribution according to the \code{mid.val.type}
+#'   parameter.
 #' @param max.val Expected upper uncertainty bound of the ditribution.
 #' @param levels Uncertainty level corresponding to the \code{min.val} and
 #'   \code{max.val} parameters.
@@ -20,8 +21,9 @@
 #' @param force.proper Discourage values of alpha and beta < 1 during the
 #'   optimization process. Tests should be done turning this option on and off
 #'   and evaluating the results
-#' @param plot Whether to plot the resulting distribution using
-#'   \code{\link{evaluate_beta_params}} fuction.
+#' @param ... Pass parameters to the \code{\link{evaluate_beta_params}}
+#'   function, like \code{plot = TRUE} or \code{cut.plot.at} to modify y axis
+#'   limits.
 #'
 #' @seealso \code{\link{evaluate_beta_params}}
 #'
@@ -44,7 +46,7 @@
 #' get_beta_params(.0001, .015, .1, force.proper = FALSE, plot = TRUE)
 #'
 
-get_beta_params <- function(min.val, mid.val, max.val, levels = c(.025, .975), mid.val.type = c('mean', 'median', 'mode'), force.proper = TRUE, plot = FALSE) {
+get_beta_params <- function(min.val, mid.val, max.val, levels = c(.025, .975), mid.val.type = c('mean', 'median', 'mode'), force.proper = TRUE, ...) {
 	obj.fun <- function(params, q = levels, intended = c(min.val, mid.val, max.val)) {
 		a = exp(params[1])
 		b = exp(params[2])
@@ -69,7 +71,7 @@ get_beta_params <- function(min.val, mid.val, max.val, levels = c(.025, .975), m
 	list(
 		alpha = res$par[1] %>% exp,
 		beta = res$par[2] %>% exp,
-		distr.parameters = evaluate_beta_params(res$par[1] %>% exp, res$par[2] %>% exp, plot = plot),
+		distr.parameters = evaluate_beta_params(res$par[1] %>% exp, res$par[2] %>% exp, ...),
 		opt.results = res
 	)
 }
@@ -106,19 +108,19 @@ get_beta_params <- function(min.val, mid.val, max.val, levels = c(.025, .975), m
 #'
 #' @examples
 #'
-#' # \code{Alpha} and \code{beta} chosen in order to have the mean
-#' # \code{alpha/(alpha + beta)} equal to .05 and precision \code{alpha + beta}
+#' # Alpha and beta chosen in order to have the mean
+#' # alpha/(alpha + beta) equal to .05 and precision alpha + beta
 #' # equal to 30
 #'
 #' evaluate_beta_params(.05 * 30, (1 - .05) * 30)
 #'
-#' # This time the \code{alpha} and \code{beta} are chosen to have a mode
-#' # \code{(alpha - 1)/(alpha + beta - 2)} equal to 0.5, with the same precision
+#' # This time the alpha and beta are chosen to have a mode
+#' # (alpha - 1)/(alpha + beta - 2) equal to 0.5, with the same precision
 #'
 #' evaluate_beta_params(.05 * (30 - 2) + 1, (1 - .05) * (30 - 2) + 1)
 #'
 #' # If we again center the mean at 0.05 but this time the precision is lowered to 15,
-#' # \code{alpha} goes below 1 and this produces a distribution with most of the mass
+#' # alpha goes below 1 and this produces a distribution with most of the mass
 #' # at zero. The mode value calculated analytically in this case would be wrong (negative)
 #' # so the empirical mode is shown as an approximation
 #'
@@ -155,7 +157,7 @@ evaluate_beta_params <- function(alpha, beta, lower.bound = .025, upper.bound = 
 	if (plot) {
 		p <- ggplot(grid, aes(prev, post)) +
 			geom_line() +
-			geom_vline(xintercept = c(params[c('2.5%', '97.5%')]), linetype = 'dashed', alpha = .8) +
+			geom_vline(xintercept = c(params[c(1, 3)]), linetype = 'dashed', alpha = .8) +
 			geom_point(
 				data = data.frame(
 					val = params[-5],
