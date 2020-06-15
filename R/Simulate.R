@@ -48,8 +48,8 @@
 #' simulate_pool_test(s = 8, w = 250, p = .01, iter = 3000, consider.sensitivity = FALSE)
 #'
 
-simulate_pool_test <- function(s = 12, w = 200, p = .01, iters = 3000, consider.sensitivity = FALSE, simulate.results = TRUE, asens = 8.88, bsens = 0.74, estimation.method = 'B') {
-	if (estimation.method %nin% c('B', 'MLE')) stop('Only Bayesian Conjugate and ML estimation methods are allowed')
+simulate_pool_test <- function(s = 12, w = 200, p = .01, iters = 3000, consider.sensitivity = FALSE, simulate.results = TRUE, asens = 8.88, bsens = 0.74, estimation.method = 'CB') {
+	if (estimation.method %nin% c('CB', 'ML')) stop('Only Bayesian Conjugate and ML estimation methods are allowed')
 
 	u <- 80 # Strangely, it does not seem to impact the simulations. to investigate
 
@@ -68,7 +68,7 @@ simulate_pool_test <- function(s = 12, w = 200, p = .01, iters = 3000, consider.
 	res <- data.frame(w, s, p, p.distr, cases = test.cases, pos = test.pos.pools, neg = w - test.pos.pools)
 
 	if (simulate.results) {
-		p.est <- get_estimates(s = s, w = w, k = test.pos.pools)$estimates
+		p.est <- get_estimates(s = s, w = w, k = test.pos.pools, method = estimation.method)$estimates
 
 		p.est <- p.est[,colnames(p.est) != 'k']
 
