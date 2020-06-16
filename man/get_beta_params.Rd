@@ -11,14 +11,15 @@ get_beta_params(
   levels = c(0.025, 0.975),
   mid.val.type = c("mean", "median", "mode"),
   force.proper = TRUE,
-  plot = FALSE
+  ...
 )
 }
 \arguments{
 \item{min.val}{Expected lower uncertainty bound of the ditribution.}
 
-\item{mid.val}{Expected central value. Can represent the median or the mean
-of the distribution according to the \code{mid.val.type} parameter.}
+\item{mid.val}{Expected central value. Can represent the mean, the median or
+the mode of the distribution according to the \code{mid.val.type}
+parameter.}
 
 \item{max.val}{Expected upper uncertainty bound of the ditribution.}
 
@@ -32,8 +33,9 @@ refers to, either the mean, the median or the mode.}
 optimization process. Tests should be done turning this option on and off
 and evaluating the results}
 
-\item{plot}{Whether to plot the resulting distribution using
-\code{\link{evaluate_beta_params}} fuction.}
+\item{...}{Pass parameters to the \code{\link{evaluate_beta_params}}
+function, like \code{plot = TRUE} or \code{cut.plot.at} to modify y axis
+limits.}
 }
 \value{
 A list with the proposed alpha and beta parameters, a description of
@@ -45,9 +47,9 @@ This tool may be helpful in building priors based on the Beta distribution.
 The user need to pass the expected mean/median of the distibution and the
 uncertainty boundaries. Then an optimizion algorithm is used to the find the
 alpha and beta parameters of the beta that reproduce a shape as similar as
-possible to the expected one. The method don't assure perfect coverage,
+possible to the expected one. The method doesn't assure perfect coverage,
 either for optimization limits or because the expected shape is not allowed
-by the Beta distribution, but is a starting point for further esploration of
+by the Beta distribution, but is a starting point for further exploration of
 useful alfa and beta parameters.
 }
 \examples{

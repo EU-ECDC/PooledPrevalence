@@ -13,7 +13,7 @@ simulate_pool_test(
   simulate.results = TRUE,
   asens = 8.88,
   bsens = 0.74,
-  estimation.method = "B"
+  estimation.method = "CB"
 )
 }
 \arguments{

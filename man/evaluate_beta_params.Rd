@@ -38,26 +38,26 @@ through \code{(alpha - 1)/(alpha + beta - 2)} so it is approximated through
 grid search
 }
 \description{
-This function is useful in define priors based on the beta distribution.
+This function is useful in defining priors based on the beta distribution.
 Given the \eqn{\alpha} and \eqn{\beta} parameters, it returns relevant
 statistics of the distribution and boundary points to help understand its
 characteristics. Optionally the full PDF of the distribution is plotted.
 }
 \examples{
 
-# \code{Alpha} and \code{beta} chosen in order to have the mean
-# \code{alpha/(alpha + beta)} equal to .05 and precision \code{alpha + beta}
+# Alpha and beta chosen in order to have the mean
+# alpha/(alpha + beta) equal to .05 and precision alpha + beta
 # equal to 30
 
 evaluate_beta_params(.05 * 30, (1 - .05) * 30)
 
-# This time the \code{alpha} and \code{beta} are chosen to have a mode
-# \code{(alpha - 1)/(alpha + beta - 2)} equal to 0.5, with the same precision
+# This time the alpha and beta are chosen to have a mode
+# (alpha - 1)/(alpha + beta - 2) equal to 0.5, with the same precision
 
 evaluate_beta_params(.05 * (30 - 2) + 1, (1 - .05) * (30 - 2) + 1)
 
 # If we again center the mean at 0.05 but this time the precision is lowered to 15,
-# \code{alpha} goes below 1 and this produces a distribution with most of the mass
+# alpha goes below 1 and this produces a distribution with most of the mass
 # at zero. The mode value calculated analytically in this case would be wrong (negative)
 # so the empirical mode is shown as an approximation
 
