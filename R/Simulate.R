@@ -145,7 +145,7 @@ format_simulation <- function(simulations, level = .95, reverse = T) {
 #' # Enrich estimations from simulated studies with accuracy information
 #'
 #' set.seed(1234)
-#' simulations <- simulate_pool_test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = FALSE)
+#' simulations <- simulate_pool_test(s = 8, w = 250, p = .01, iter = 3, consider.sensitivity = FALSE)
 #' enrich_simulation(simulations)
 #'
 
