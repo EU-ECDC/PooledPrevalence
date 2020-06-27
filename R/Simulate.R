@@ -140,6 +140,14 @@ format_simulation <- function(simulations, level = .95, reverse = T) {
 #'   \code{base.unc} and error \code{base.err}.
 #'
 #' @export
+#'
+#' @examples
+#' # Enrich estimations from simulated studies with accuracy information
+#'
+#' set.seed(1234)
+#' simulations <- simulate_pool_test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = FALSE)
+#' enrich_simulation(simulations)
+#'
 
 enrich_simulation <- function(simulations, a = 0.3, b = 0.3) {
 
