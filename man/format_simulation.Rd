@@ -23,7 +23,7 @@ via \code{enrich_simulation} it does it automatically.
 }
 \examples{
 
-sim <- simulate_pool_test(s = 8, w = 250, p = .01, iter = 3000, consider.sensitivity = FALSE)
+sim <- simulate_pool_test(s = 8, w = 250, p = .01, iters = 3000, consider.sensitivity = FALSE)
 
 formatted.sim <- format_simulation(sim)
 
