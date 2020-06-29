@@ -2,7 +2,7 @@
 % Please edit documentation in R/Helpers.R
 \name{get_beta_params}
 \alias{get_beta_params}
-\title{Estimate Beta distibution parameters given a mean and uncertainty boundaries}
+\title{Estimate Beta distribution parameters given a mean and uncertainty boundaries}
 \usage{
 get_beta_params(
   min.val,
@@ -15,13 +15,13 @@ get_beta_params(
 )
 }
 \arguments{
-\item{min.val}{Expected lower uncertainty bound of the ditribution.}
+\item{min.val}{Expected lower uncertainty bound of the distribution.}
 
 \item{mid.val}{Expected central value. Can represent the mean, the median or
 the mode of the distribution according to the \code{mid.val.type}
 parameter.}
 
-\item{max.val}{Expected upper uncertainty bound of the ditribution.}
+\item{max.val}{Expected upper uncertainty bound of the distribution.}
 
 \item{levels}{Uncertainty level corresponding to the \code{min.val} and
 \code{max.val} parameters.}
@@ -44,8 +44,8 @@ the actual output of the optimization algorithm.
 }
 \description{
 This tool may be helpful in building priors based on the Beta distribution.
-The user need to pass the expected mean/median of the distibution and the
-uncertainty boundaries. Then an optimizion algorithm is used to the find the
+The user need to pass the expected mean/median of the distribution and the
+uncertainty boundaries. Then an optimization algorithm is used to the find the
 alpha and beta parameters of the beta that reproduce a shape as similar as
 possible to the expected one. The method doesn't assure perfect coverage,
 either for optimization limits or because the expected shape is not allowed

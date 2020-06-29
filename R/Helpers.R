@@ -1,19 +1,19 @@
-#' Estimate Beta distibution parameters given a mean and uncertainty boundaries
+#' Estimate Beta distribution parameters given a mean and uncertainty boundaries
 #'
 #' This tool may be helpful in building priors based on the Beta distribution.
-#' The user need to pass the expected mean/median of the distibution and the
-#' uncertainty boundaries. Then an optimizion algorithm is used to the find the
+#' The user need to pass the expected mean/median of the distribution and the
+#' uncertainty boundaries. Then an optimization algorithm is used to the find the
 #' alpha and beta parameters of the beta that reproduce a shape as similar as
 #' possible to the expected one. The method doesn't assure perfect coverage,
 #' either for optimization limits or because the expected shape is not allowed
 #' by the Beta distribution, but is a starting point for further exploration of
 #' useful alfa and beta parameters.
 #'
-#' @param min.val Expected lower uncertainty bound of the ditribution.
+#' @param min.val Expected lower uncertainty bound of the distribution.
 #' @param mid.val Expected central value. Can represent the mean, the median or
 #'   the mode of the distribution according to the \code{mid.val.type}
 #'   parameter.
-#' @param max.val Expected upper uncertainty bound of the ditribution.
+#' @param max.val Expected upper uncertainty bound of the distribution.
 #' @param levels Uncertainty level corresponding to the \code{min.val} and
 #'   \code{max.val} parameters.
 #' @param mid.val.type Define which parameter of the distribution \code{mid.val}
