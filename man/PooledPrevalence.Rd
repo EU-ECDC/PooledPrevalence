@@ -18,4 +18,5 @@ based on a Bayesian framework, with the possibility to perform a full Baysian
 analysis including also uncertainty due to the sensitivity in acquiring the
 testing material. The package was developed in the occasion of the COVID-19
 pandemic, but can be utilized in every laboratory based prevalence study.
+More info here: https://github.com/EU-ECDC/PooledPrevalence
 }

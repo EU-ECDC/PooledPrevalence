@@ -13,6 +13,7 @@
 #' analysis including also uncertainty due to the sensitivity in acquiring the
 #' testing material. The package was developed in the occasion of the COVID-19
 #' pandemic, but can be utilized in every laboratory based prevalence study.
+#' More info here: https://github.com/EU-ECDC/PooledPrevalence
 #'
 #'
 #'
@@ -21,6 +22,7 @@
 #' @import ggplot2
 #' @importFrom partykit ctree
 #' @importFrom MCMCpack MCMCmetrop1R
+#'
 #'
 #' @docType package
 #' @name PooledPrevalence
