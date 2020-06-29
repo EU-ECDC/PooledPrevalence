@@ -41,8 +41,8 @@ sensitivity (default \code{0.74})}
 MLE for the prevalence estimation (default \code{'CB'})}
 }
 \value{
-A dataframe with: the initial w, s, and p parameters; p.sample: the
-individual risk ditribution quantiles (0.025, .5, .975); cases: the number
+A \code{data.frame} with: the initial w, s, and p parameters; p.sample: the
+individual risk distribution quantiles (0.025, .5, .975); cases: the number
 of positive individuals in the sample, after accounting for sampling
 sensitivity; pos & neg: the number of positive and negative pools out of w
 tested pools.
@@ -59,16 +59,16 @@ function.
 # Simulate a study in a population with a disease risk of 1\%
 
 set.seed(1234)
-simulate_pool_test(s = 8, w = 250, p = .01, iter = 1, consider.sensitivity = FALSE)
+simulate_pool_test(s = 8, w = 250, p = .01, iters = 1, consider.sensitivity = FALSE)
 
 # Same simulation this time considering false negatives due to sampling sensitivity,
-# with \code{asens} and \code{bsens} chosen to have a mean sensitivity of 95\% and
+# with asens and bsens chosen to have a mean sensitivity of 95\% and
 # a lower bound around 70\%
 
 set.seed(1234)
 simulate_pool_test(s = 8, w = 250, p = .01, iters = 1, consider.sensitivity = TRUE)
 
-# use the \code{iters} argument to create more simulations
+# use the iters argument to create more simulations
 
 simulate_pool_test(s = 8, w = 250, p = .01, iters = 3000, consider.sensitivity = FALSE)
 
