@@ -31,3 +31,11 @@ expected prevalence in an unpooled study, plus the relative estimation error
 and uncertainty size. The unpooled prevalence is computed using the Conjugate
 Bayes method, with Beta prior parameters both equal to 0.3
 }
+\examples{
+# Enrich estimations from simulated studies with accuracy information
+
+set.seed(1234)
+simulations <- simulate_pool_test(s = 8, w = 250, p = .01, iter = 3, consider.sensitivity = FALSE)
+enrich_simulation(simulations)
+
+}
