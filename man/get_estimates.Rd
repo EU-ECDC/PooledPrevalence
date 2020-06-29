@@ -21,46 +21,50 @@ get_estimates(
 )
 }
 \arguments{
-\item{s}{A vector of pool sizs (number of individual samples in a pool)}
+\item{s}{A vector of pool sizs (number of individual samples in a pool).}
 
-\item{w}{A vector of numbers of tested pools in a study}
+\item{w}{A vector of numbers of tested pools in a study.}
 
-\item{k}{A vector of numbers of positive pools in a study}
+\item{k}{A vector of numbers of positive pools in a study.}
 
 \item{p_test}{A vector of probabilities of positive pools in a study. if
 \code{k} is not provided, it used to generate the expected number of
-positive pools}
+positive pools.}
 
 \item{p}{A vector of prevalences of the disease. if \code{k} and
 \code{p_test} is not provided, it used to generate the expected number of
-positive pools}
+positive pools.}
 
 \item{level}{The uncertainty level to use for the confidence/credibility
 interval. Must be strictly greater than 0 and less than 1. Defaults to
-0.95, which corresponds to a 95 percent confidence interval}
+0.95, which corresponds to a 95 percent confidence interval.}
 
-\item{method}{Either Maximum Likelihood Estimation (ML), Conjugate Bayesian
-(CB) estimation, Hierarchical MCMC Bayesian estimation (HB)}
+\item{method}{Either Conjugate Bayesian (CB) estimation (default),
+Hierarchical MCMC Bayesian estimation (HB), Maximum Likelihood Estimation
+(ML).}
 
 \item{a}{\eqn{\alpha} parameter of the Beta prior. The prior is on the test
 results in case of \code{method = 'CB'} and on the prevalence estimation in
-case of \code{method = 'HB'}}
+case of \code{method = 'HB'}.}
 
 \item{b}{\eqn{\beta} parameter of the Beta prior. The prior is on the test
 results in case of \code{method = 'CB'} and on the prevalence estimation in
-case of \code{method = 'HB'}}
+case of \code{method = 'HB'}.}
 
-\item{iters}{Number of samples to draw when using methods CB e HB.
-\code{parallel::detectCores()} or as stored in \code{getOption("mc.cores")}}
+\item{iters}{Number of samples to draw when using methods CB e HB.}
 
 \item{consider.sensitivity}{whether to consider sample acquisition
-sensitivity in the HB estimation}
+sensitivity in the HB estimation.}
 
 \item{asens}{\eqn{\alpha} parameter of the Beta distribution describing the
-sample acquisition sensitivity}
+sample acquisition sensitivity.}
 
 \item{bsens}{\eqn{\beta} parameter of the Beta distribution describing the
-sample acquisition sensitivity}
+sample acquisition sensitivity.}
+
+\item{hc.chains}{number of chains for the Hierarchical Bayesian method. By
+default it's the number of cores determined by
+\code{parallel::detectCores()} or as stored in \code{getOption("mc.cores")}.}
 }
 \value{
 A list with two components: A named numeric matrix of height equal to
@@ -93,9 +97,6 @@ prevalence; the expected number of positive pools is then generated throgh
 Maximum Likelihood. All parameters study parameters \code{s, w, p_tests, p}
 can be vectors; this permit to analyze multiple (real or simulated) studies
 at once.
-
-The HB method requires the compilation of a STAN model at the first use. The
-model will be compiled only the first time.
 }
 \examples{
 
